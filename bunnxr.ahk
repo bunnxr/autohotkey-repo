@@ -35,6 +35,8 @@ SetWorkingDir D:\  ;consistent start directory.
     GroupAdd, CHARLie, ahk_exe csgo.exe
     GroupAdd, cmd, ahk_exe cmd.exe
     GroupAdd, cmd, ahk_exe parsecd.exe
+    GroupAdd, discord, ahk_exe discord.exe
+    GroupAdd, discord, ahk_exe discordcanary.exe
     SoundGet, variab, , mute, 6
     ;Run syncthing\syncthing.bat,, hide ;syncthing in background
     ;Send, #g ;for windows game bar
@@ -333,13 +335,13 @@ SendInput, zerotier-cli listnetworks{Enter}
 Return
 #IfWinActive
 
-#IfWinActive ahk_exe discordcanary.exe
+#IfWinActive ahk_group discord
 dimscord:
 
 :*?:vc::
 SendRaw, <#961579220595781644>
 Return
-:*?:prv::
+:*?:ponrv::
 SendRaw, <#993475685660241972>
 Return
 
