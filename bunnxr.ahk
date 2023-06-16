@@ -16,7 +16,7 @@ SetTitleMatchMode, Slow
 SendMode Input  ;for new scripts due to its superior speed and reliability.
 SetWorkingDir D:\  ;consistent start directory. 
 ;Control, Hide, , Start1, ahk_class Shell_TrayWnd  ;can hide windows start button logo
-;hellow gg
+
 {
     ;required at script startup
     Menu, Tray, NoStandard
