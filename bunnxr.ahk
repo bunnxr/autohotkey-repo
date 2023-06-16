@@ -453,4 +453,4 @@ Sleep, 6000
 Run, devop\noeject.bat,,hide
 Return
 
-^l::Run, devop\wloop.ahk
+^l::Run, devop\autohotkey-repo\wloop.ahk
