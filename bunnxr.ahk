@@ -37,7 +37,8 @@ SetWorkingDir D:\  ;consistent start directory.
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
-    SoundGet, variab, , mute, 6
+    micid = 7
+    SoundGet, micvar, , mute, %micid%
     ;Run syncthing\syncthing.bat,, hide ;syncthing in background
     ;Send, #g ;for windows game bar
     ;Run, devop\test.ahk
@@ -193,25 +194,39 @@ F4::Run D:\Drive\My Drive
 {
     ;mic mute code
     Home::  ; hotkey
+	Suspend, Permit
     micmute:
-    SoundSet, +1, MASTER, mute, 6 ; numeric MicID no.
-	SoundGet, variab, , mute, 6
-    if (variab = "Off")
+    SoundSet, +1, MASTER, mute, %micid% ; numeric MicID no.
+	SoundGet, micvar, , mute, %micid%
+    if (micvar = "Off")
         SoundPlay, devop\sounds\micon.mp3
     Else
         SoundPlay, devop\sounds\off.mp3
-    if (variab = "Off")
+    if (micvar = "Off")
         Menu, Tray, Icon, *
     Else
         Menu, Tray, Icon, devop\icons\micoff.ico
 	Return
-	#if (variab = "Off")
-		~F8::SoundSet, 1, MASTER, mute, 6
-		~F8 up::SoundSet, 0, MASTER, mute, 6
+	#if (micvar = "Off")
+		~F8::
+		Suspend, Permit
+		SoundSet, 1, MASTER, mute, %micid%
+		Return
+		~F8 up::
+		Suspend, Permit
+		SoundSet, 0, MASTER, mute, %micid%
+		Return
 	#if
-	#if (variab = "On")
-		~F8::SoundSet, 0, MASTER, mute, 6
-		~F8 up::SoundSet, 1, MASTER, mute, 6
+	#if (micvar = "On")
+		~F8::
+		Suspend, Permit
+		SoundSet, 0, MASTER, mute, %micid%
+		Return
+		
+		~F8 up::
+		Suspend, Permit
+		SoundSet, 1, MASTER, mute, %micid%
+		Return
 	#if
 }
 
@@ -281,30 +296,37 @@ Return
 SendInput, $fold = get-childitem -dir -recurse{space}
 SendRaw, | Where {$_.name-match $f} | Select -expand name
 SendInput, {enter}robocopy $fold \\chrli\share\$fold
-SendInput, {space}/MT:6 /NOOFFLOAD /MIR /ZB /B /J /E
+SendInput, {space}/MT:6 /MIR /ZB /B /J /E
 SendInput, {space}/Z /TBD /V /njh /njs /ndl /nc /ns
 SendInput, {space}| {`%}{`{}$data = $_.Split([char]9)
-SendInput, `; if("$($data[4])" -ne ""){space}
+SendRaw, `; if("$($data[4])" -ne `"
+Sleep 300
+SendInput, {`"}{`)}{space}
 SendRaw, { $ffile = "$($data[4])"}
 SendInput, {space}`;Write-Progress "Completed $($data[0])"
 SendInput, {space}-Activity "CHARLie"
-SendInput, -CurrentOperation "$($ffile)"{`}}{enter}
+SendInput, -CurrentOperation "$($ffile)"
+SendInput, {space}{space}-ErrorAction SilentlyContinue`; {`}}{enter}
 Return
 
 ;finding the file and then sending it
 :*?:filesend::
-SendInput, $file = get-childitem -recurse{space}
+SendInput, $filu = ""{Enter}
+SendInput, $filu = get-childitem -recurse{space}
 SendRaw, | where {$_.name-match $t} | select -expand name
 SendInput, {enter}$fo = get-location | Select -expand path
-SendInput, {enter}robocopy $fo \\chrli\share\ $file /S /MT:6
-SendInput, {space}/NOOFFLOAD /ZB /J /B /Z /TBD /V
+SendInput, {enter}robocopy $fo \\chrli\share\ $filu /S /MT:6
+SendInput, {space}/ZB /J /B /Z /TBD /V
 SendInput, {space}/njh /njs /ndl /nc /ns
 SendInput, {space}| {`%}{`{}$data = $_.Split([char]9)
-SendInput, `; if("$($data[4])" -ne ""){space}
+SendRaw, `; if("$($data[4])" -ne `"
+Sleep 300
+SendInput, {`"}{`)}{space}
 SendRaw, { $rfile = "$($data[4])"}
 SendInput, {space}`;Write-Progress "Completed $($data[0])"
 SendInput, {space}-Activity "CHARLie"
-SendInput, -CurrentOperation "$($rfile)"{`}}{enter}
+SendInput, -CurrentOperation "$($rfile)"
+SendInput, {space}{space}-ErrorAction SilentlyContinue`; {`}}{enter}
 Return
 
 :*?:takeown::
@@ -319,7 +341,7 @@ zerotier:
 SendInput, zerotier-cli join 17d709436c8fbe93{Enter}
 Return
 :*?:zr2l::
-SendInput, zerotier-cli join 17d709436c8fbe93{Enter}
+SendInput, zerotier-cli leave 17d709436c8fbe93{Enter}
 Return
 :*?:zrj::
 SendInput, zerotier-cli join 12ac4a1e718c193b{Enter}
@@ -348,6 +370,7 @@ Return
 :*?:itlic::**{left}
 :*?:bld::****{left}{left}
 :*?:strk::~~~~{left}{left}
+:*?:`(::`(`){left}
 
 AppsKey::Send ^g
 
@@ -408,8 +431,9 @@ Return
 #IFwinActive
 
 #IfWinActive killa
-:*?:dr::GoogleDriveFS{Enter}
-:*?:dc::discord{Enter}
+:*?:drv::GoogleDriveFS{Enter}
+:*?:ds::discord{Enter}
+:*?:dc::discordcanary{Enter}
 :*?:edge::msedge{enter}
 #IfWinActive
 
@@ -447,7 +471,7 @@ Loop, 8
 }
 Return
 
-^!#E::
+^#E::
 Run, %comspec% /c taskkill /f /im explorer.exe,,hide
 Sleep, 400
 Run, explorer.exe
