@@ -21,19 +21,18 @@ SetWorkingDir D:\  ;consistent start directory.
     ;required at script startup
     Menu, Tray, NoStandard
     Menu, Tray, Add, Spy, Spy
-    Menu, Tray, Add, Killer, Killer
     Menu, Tray, Add, MicID, MicID
-    Menu, Tray, Add, syncthing, syncthing
+    ;Menu, Tray, Add, syncthing, syncthing
     Menu, Tray, Add, Bearsus, bear
     Menu, Tray, Add, NirCmd, nircmdhelp
     Menu, Tray, Add, Ahk2exe, Compiler
-    Menu, Tray, Add, AhkChm, AhkChm
     Menu, Tray, Add, DrvCache, drivecache
     Menu, Tray, Add, Reload, ^#r
     Menu, Tray, Add, Terminate, #Delete
     GroupAdd, CHARLie, ahk_exe VALORANT-Win64-Shipping.exe
     GroupAdd, CHARLie, ahk_exe csgo.exe
     GroupAdd, cmd, ahk_exe cmd.exe
+    GroupAdd, cmd, ahk_exe powershell.exe
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
@@ -46,7 +45,7 @@ SetWorkingDir D:\  ;consistent start directory.
     IfWinNotExist, ahk_exe D:\parsec\parsecd.exe
         Run, *RunAs devop\parsec.lnk
 }
-Return ;returnofscriptstart
+Return
 
 ^#/::
 Suspend, Permit
@@ -79,17 +78,11 @@ Return
 bear:
 Run, @charlie\bear.exe
 Return
-AhkChm:
-Run, @charlie\AutoHotkey.chm
-Return
-Killer:
-Run, @charlie\killer.ahk
-Return
 Compiler:
 Run, @charlie\ahk2exe\Ahk2Exe.exe
 Return
 MicID:
-Run, devop\MicID.exe
+Run, @charlie\MicID.exe
 Return
 drivecache:
 Run, D:\drivecache
@@ -255,7 +248,6 @@ Return
 #IfWinActive
 
 :*?:haha::shahaha
-joy:
 #If GetKeyState("Joy9")
 Joy2::Send {f10}
 Joy1::Run D:\tekken\tekken.lnk
@@ -265,12 +257,14 @@ Joy3::Gosub, nircmd
 
 #IfWinActive ahk_group cmd
 ~$Capslock Up::SetCapsLockState, Off
-:*?:clr::clear{enter}
+:*?:clr::
+SendInput, clear;{enter}
+Return
 
-pwsh:
 :*?:pwsh::
 SendInput, powershell{enter}
-Sleep 300
+pwsh:
+Sleep 400
 SendInput $server = "\\chrli\share\"{enter}
 Sleep 200
 SendRaw, function prompt {"chrli_ $pwd $ "}
@@ -329,32 +323,24 @@ SendInput, -CurrentOperation "$($rfile)"
 SendInput, {space}{space}-ErrorAction SilentlyContinue`; {`}}{enter}
 Return
 
-:*?:takeown::
-SendInput, $t = $f{enter}
+:*?:takefold:: ;takes ownership of files
 SendInput, $own = get-childitem -dir -recurse{space}
-SendRaw, | Where {$_.name-match $t} | Select -expand name
+SendRaw, | Where {$_.name-match $f} | Select -expand name
 SendInput, {enter}takeown /f $own /r /d y{enter}
 Return
 
-zerotier:
-:*?:zr2j::
-SendInput, zerotier-cli join 17d709436c8fbe93{Enter}
+:*?:takefile:: ;takes ownership of files
+SendInput, $own = get-childitem -recurse{space}
+SendRaw, | Where {$_.name-match $t} | Select -expand name
+SendInput, {enter}takeown /f $own{enter}
 Return
-:*?:zr2l::
-SendInput, zerotier-cli leave 17d709436c8fbe93{Enter}
-Return
-:*?:zrj::
-SendInput, zerotier-cli join 12ac4a1e718c193b{Enter}
-Return
-:*?:zrl::
-SendInput, zerotier-cli leave 12ac4a1e718c193b{Enter}
-Return
-:*?:zrs::
-SendInput, zerotier-cli status{Enter}
-Return
-:*?:zrn::
-SendInput, zerotier-cli listnetworks{Enter}
-Return
+
+:*?:zr2j::zerotier-cli join 17d709436c8fbe93{Enter}
+:*?:zr2l::zerotier-cli leave 17d709436c8fbe93{Enter}
+:*?:zrj::zerotier-cli join 12ac4a1e718c193b{Enter}
+:*?:zrl::zerotier-cli leave 12ac4a1e718c193b{Enter}
+:*?:zrs::zerotier-cli status{Enter}
+:*?:zrn::zerotier-cli listnetworks{Enter}
 #IfWinActive
 
 #IfWinActive ahk_group discord
@@ -381,7 +367,6 @@ Return
 Tab::
 Send, {Ctrl Down}{i}{Ctrl Up}
 Return
-
 #IfWinActive
 
 #IfWinActive ahk_exe parsecd.exe
@@ -397,10 +382,6 @@ Return
 ~CapsLock & w::
 Send, ^+{w}
 ;SetCapsLockState, AlwaysOff
-Return
-Insert::
-Run, %comspec% /c taskkill /f /im parsecd.exe,,hide
-Gosub, terminateapps
 Return
 #IfWinActive
 ~CapsLock & Enter::
@@ -431,6 +412,8 @@ Return
 #IFwinActive
 
 #IfWinActive killa
+:*?:note::ONENOTE{enter}
+:*?:code::code{enter}
 :*?:drv::GoogleDriveFS{Enter}
 :*?:ds::discord{Enter}
 :*?:dc::discordcanary{Enter}
@@ -472,7 +455,7 @@ Loop, 8
 Return
 
 ^#E::
-Run, %comspec% /c taskkill /f /im explorer.exe,,hide
+Run, %comspec% /c taskkill /f /im /* explorer */.exe,,hide
 Sleep, 400
 Run, explorer.exe
 Sleep, 6000
