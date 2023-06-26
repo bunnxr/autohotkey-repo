@@ -36,11 +36,9 @@ SetWorkingDir D:\  ;consistent start directory.
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
-    micid = 7
+    micid = 8
     SoundGet, micvar, , mute, %micid%
     ;Run syncthing\syncthing.bat,, hide ;syncthing in background
-    ;Send, #g ;for windows game bar
-    ;Run, devop\test.ahk
     ;Suspend, On
     IfWinNotExist, ahk_exe D:\parsec\parsecd.exe
         Run, *RunAs devop\parsec.lnk
@@ -412,7 +410,7 @@ Return
 #IFwinActive
 
 #IfWinActive killa
-:*?:note::ONENOTE{enter}
+:*?:note::ONENOTEM{enter}
 :*?:code::code{enter}
 :*?:drv::GoogleDriveFS{Enter}
 :*?:ds::discord{Enter}
