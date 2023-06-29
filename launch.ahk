@@ -16,6 +16,12 @@ IfWinNotExist, ahk_exe parsecd.exe
     Run, *RunAs devop\parsec.lnk
 IfWinNotExist, ahk_exe GoogleDriveFS.exe
     Run, %location%\drv.lnk
+GetKeyState, rg, CapsLock
+if (rg = "D")
+    Run devop\launchahk.bat
+GetKeyState, rg, LShift
+if (rg = "D")
+    Run haves\vscode\code.exe
 IfWinExist, ahk_exe discord.exe
     gosub Exit
 Else
