@@ -8,11 +8,11 @@
 #SingleInstance, force
 #Persistent
 #InstallKeybdHook
+#WinActivateForce
 ;#Include, test.ahk
 DetectHiddenWindows, On
 ;SetTitleMatchMode, RegEx
 SetTitleMatchMode, 2
-SetTitleMatchMode, Slow
 SendMode Input  ;for new scripts due to its superior speed and reliability.
 SetWorkingDir D:\  ;consistent start directory. 
 ;Control, Hide, , Start1, ahk_class Shell_TrayWnd  ;can hide windows start button logo
@@ -100,41 +100,12 @@ Suspend, Permit
 DllCall("LockWorkStation")
 Return
 
-F12:: ;mute current windowF
-nircmd:
-WinGet, WinProcessName, ProcessName, A
-Run, *RunAs @charlie\nircmd.exe muteappvolume %WinProcessName% 2
-Return
-
-F7::
-Toggle := !Toggle
-If Toggle
-    Gosub, Slowdown
-else
-    Gosub, Slowup
-return
-
-~F5 & F6:: ;suspend specific
-InputBox, procu, SuspendIO, name of exe, ,240,123
-Gosub, appsus
-Return
-
 ~BackSpace & Insert:: ;kill specific
 InputBox, killa, killa, name of exe, ,240,123
 Run, %comspec% /c taskkill /f /im %killa%.exe,,hide
 Return
 
 RAlt::SendInput #+f ;launch for browser search
-
-~F6:: ;suspend application
-procu = TekkenGame-Win64-Shipping
-appsus:
-Toggle := !Toggle
-If Toggle
-    Run, @charlie\pssuspend.exe %procu%.exe,, Hide
-else
-    Run, @charlie\pssuspend.exe -r %procu%.exe,, Hide
-return
 
 AppsKey::
 Send, ^!g
@@ -164,76 +135,97 @@ F1:: ;for "My Computer"
 ;Run, explorer.exe ;quick access
 Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
 Return
+F2::
+KeyWait, F2
+IfWinNotExist, ahk_exe code.exe
+run, haves\VSCode\code.exe
+Return
 F3::Run C:\Users\%A_UserName%\AppData ;appdata
 F4::Run D:\Drive\My Drive
 #IfWinNotActive
+~F5 & F6:: ;suspend specific
+InputBox, procu, SuspendIO, name of exe, ,240,123
+Gosub, appsus
+Return
+~F6:: ;suspend application
+procu = TekkenGame-Win64-Shipping
+appsus:
+Toggle := !Toggle
+If Toggle
+    Run, @charlie\pssuspend.exe %procu%.exe,, Hide
+else
+    Run, @charlie\pssuspend.exe -r %procu%.exe,, Hide
+return
+F7::
+Toggle := !Toggle
+If Toggle
+    Gosub, Slowdown
+else
+    Gosub, Slowup
+return
+F12:: ;mute current windowF
+nircmd:
+WinGet, WinProcessName, ProcessName, A
+Run, *RunAs @charlie\nircmd.exe muteappvolume %WinProcessName% 2
+Return
 
 ~LAlt & `::SendInput {``} ;sending the grace accent as it was muted
-
-{   
-    media:
-    ~PgUp & PgDn::
-    ~PgDn & PgUp::
-    SendInput, {Media_Play_Pause}
-    Return
-    ~RShift & PgUp::SendInput, {Media_Next}
-    ~RShift & PgDn::SendInput, {Media_Prev}
-    PgUp::SendInput, {Volume_Up}
-    PgDn::SendInput, {Volume_Down}
-}
-
-{
-    ;mic mute code
-    Home::  ; hotkey
-	Suspend, Permit
-    micmute:
-    SoundSet, +1, MASTER, mute, %micid% ; numeric MicID no.
-	SoundGet, micvar, , mute, %micid%
-    if (micvar = "Off")
-        SoundPlay, devop\sounds\micon.mp3
-    Else
-        SoundPlay, devop\sounds\off.mp3
-    if (micvar = "Off")
-        Menu, Tray, Icon, *
-    Else
-        Menu, Tray, Icon, devop\icons\micoff.ico
-	Return
-	#if (micvar = "Off")
-		~F8::
-		Suspend, Permit
-		SoundSet, 1, MASTER, mute, %micid%
-		Return
-		~F8 up::
-		Suspend, Permit
-		SoundSet, 0, MASTER, mute, %micid%
-		Return
-	#if
-	#if (micvar = "On")
-		~F8::
-		Suspend, Permit
-		SoundSet, 0, MASTER, mute, %micid%
-		Return
-		
-		~F8 up::
-		Suspend, Permit
-		SoundSet, 1, MASTER, mute, %micid%
-		Return
-	#if
-}
-
-;Run "C:\Windows\System32\SndVol.exe" ;vol for multi apps
-;F2:: ;process hacker
-process:
-Run @charlie\process.exe
+ 
+media:
+PgUp & PgDn::
+PgDn & PgUp::
+SendInput, {Media_Play_Pause}
 Return
-{   ;endscr
-    #Delete::
-    Suspend, Permit
-    SoundPlay, devop\sounds\terminate.mp3
-    Sleep 2000
-    ExitApp, [ ExitCode]
-    Return
-}
+RShift & PgUp::SendInput, {Media_Next}
+RShift & PgDn::SendInput, {Media_Prev}
+~PgUp::SendInput, {Volume_Up}
+~PgDn::SendInput, {Volume_Down}
+
+
+;mic mute code
+Home::  ; hotkey
+Suspend, Permit
+micmute:
+SoundSet, +1, MASTER, mute, %micid% ; numeric MicID no.
+SoundGet, micvar, , mute, %micid%
+if (micvar = "Off")
+    SoundPlay, devop\sounds\micon.mp3
+Else
+    SoundPlay, devop\sounds\off.mp3
+if (micvar = "Off")
+    Menu, Tray, Icon, *
+Else
+    Menu, Tray, Icon, devop\icons\micoff.ico
+Return
+#if (micvar = "Off")
+	~F8::
+	Suspend, Permit
+	SoundSet, 1, MASTER, mute, %micid%
+	Return
+	~F8 up::
+	Suspend, Permit
+	SoundSet, 0, MASTER, mute, %micid%
+	Return
+#if
+#if (micvar = "On")
+	~F8::
+	Suspend, Permit
+	SoundSet, 0, MASTER, mute, %micid%
+	Return
+		
+	~F8 up::
+	Suspend, Permit
+	SoundSet, 1, MASTER, mute, %micid%
+	Return
+#if
+
+;endscr
+#Delete::
+Suspend, Permit
+SoundPlay, devop\sounds\terminate.mp3
+Sleep 2000
+ExitApp, [ ExitCode]
+Return
 
 ~Capslock & home:: ;discord deafen
 Send, ^!d
@@ -344,6 +336,7 @@ Return
 #IfWinActive ahk_group discord
 dimscord:
 
+:*?:yuro::`:yoru`:{enter}
 :*?:vc::
 SendRaw, <#961579220595781644>
 Return
@@ -371,6 +364,8 @@ Return
 parsec:
 ~CapsLock & d::
 Send, ^!{d}
+KeyWait, CapsLock
+Winclose
 ;SetCapsLockState, AlwaysOff
 Return
 ~CapsLock & q::
@@ -453,7 +448,7 @@ Loop, 8
 Return
 
 ^#E::
-Run, %comspec% /c taskkill /f /im /* explorer */.exe,,hide
+Run, %comspec% /c taskkill /f /im explorer.exe,,hide
 Sleep, 400
 Run, explorer.exe
 Sleep, 6000

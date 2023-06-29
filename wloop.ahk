@@ -12,7 +12,7 @@ Loop, {
     sleep, 100
     MouseClick
     sleep, 100
-    SendInput, {f}
+    SendInput, {g}
     Sleep 200
     SendInput, {b}
     SendInput {s Down}
@@ -22,7 +22,7 @@ Loop, {
     sleep, 100
     MouseClick
     sleep, 100
-    SendInput, {f}
+    SendInput, {g}
     Sleep 200
     SendInput, {b}
     sleep 3000
