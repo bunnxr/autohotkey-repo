@@ -7,16 +7,24 @@ SetTitleMatchMode, Slow
 SetWorkingDir, D:\
 DetectHiddenWindows, On
 Menu, Tray, Icon, devop\icons\codeee.ico
-GroupAdd, grp, ahk_exe GoogleDriveFS.exe
-GroupAdd, grp, ahk_exe discord.exe
-GroupAdd, grp, ahk_exe parsecd.exe
-location = C:\Users\CHARLie\AppData\Roaming\Microsoft\Windows\Start Menu\Programs
-
-IfWinNotExist, ahk_exe parsecd.exe
-    Run, *RunAs devop\parsec.lnk
+if !A_IsAdmin
+{
+    Run *RunAs "%A_AhkPath%" "%A_ScriptFullPath%"
+    ;add "%A_AhkPath%" if there's .ahk
+    ;WARNING:remove ahkpath if script is compiled
+    ExitApp
+}
+Run, *RunAs devop\bunnxr.ahk(elevated).lnk,,Hide
+GetKeyState, str, CapsLock
+if (str = "D")
+    gosub secondexit
+IfWinNotExist, ahk_exe D:\parsec\parsecd.exe
+    Run, *RunAs devop\parsec.lnk,,hide
+    WinWait, Parsec
+        Winclose
 IfWinNotExist, ahk_exe GoogleDriveFS.exe
-    Run, %location%\drv.lnk
-GetKeyState, rg, CapsLock
+    Run, C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Google Drive.lnk,,hide
+GetKeyState, rg, l
 if (rg = "D")
     Run devop\launchahk.bat
 GetKeyState, rg, LShift
@@ -25,11 +33,17 @@ if (rg = "D")
 IfWinExist, ahk_exe discord.exe
     gosub Exit
 Else
-    Run, *RunAs %location%\ds.lnk,,hide
-Sleep, 800
+    Run, %A_Programs%\ds.lnk,,hide
+Sleep, 1000
 WinWaitActive, ahk_exe discord.exe
     WinMinimize ahk_exe discord.exe
 Winwait, Friends - Discord
     WinClose
 Exit:
 ExitApp, [ ExitCode]
+Return
+secondexit:
+SplashTextOn,,, Omitting the launch..
+Sleep, 2000
+;Run, %comspec% /c taskkill /f /im msedge.exe,,hide
+gosub, Exit

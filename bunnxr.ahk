@@ -36,12 +36,11 @@ SetWorkingDir D:\  ;consistent start directory.
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
-    micid = 8
+    micid = 9
     SoundGet, micvar, , mute, %micid%
     ;Run syncthing\syncthing.bat,, hide ;syncthing in background
     ;Suspend, On
-    IfWinNotExist, ahk_exe D:\parsec\parsecd.exe
-        Run, *RunAs devop\parsec.lnk
+    gosub seticon ;WARNING: CONTAINS A RETURN, COMMANDS BELLOW WONT RUN
 }
 Return
 
@@ -181,21 +180,21 @@ RShift & PgDn::SendInput, {Media_Prev}
 ~PgUp::SendInput, {Volume_Up}
 ~PgDn::SendInput, {Volume_Down}
 
-
 ;mic mute code
 Home::  ; hotkey
 Suspend, Permit
-micmute:
-SoundSet, +1, MASTER, mute, %micid% ; numeric MicID no.
+SoundSet, +1, MASTER, mute, %micid%
+mutemic:
 SoundGet, micvar, , mute, %micid%
 if (micvar = "Off")
     SoundPlay, devop\sounds\micon.mp3
 Else
     SoundPlay, devop\sounds\off.mp3
+seticon:
 if (micvar = "Off")
-    Menu, Tray, Icon, *
+    Menu, Tray, Icon, devop\icons\orange.ico ;Menu, Tray, Icon, *
 Else
-    Menu, Tray, Icon, devop\icons\micoff.ico
+    Menu, Tray, Icon, devop\icons\tomato.ico
 Return
 #if (micvar = "Off")
 	~F8::
@@ -228,7 +227,7 @@ ExitApp, [ ExitCode]
 Return
 
 ~Capslock & home:: ;discord deafen
-Send, ^!d
+Send, ^+!d
 Return
 
 #IfWinActive ahk_exe code.exe
@@ -365,8 +364,8 @@ parsec:
 ~CapsLock & d::
 Send, ^!{d}
 KeyWait, CapsLock
+Keywait, d, D
 Winclose
-;SetCapsLockState, AlwaysOff
 Return
 ~CapsLock & q::
 Send, ^+{i}
@@ -425,7 +424,7 @@ Sleep, 500
 terminateapps:
 SoundPlay, devop\sounds\terminateapps.mp3
 Return
-
+~alt & 3::Send {alt down}{Numpad3}{alt up}
 ^#r::
 Suspend, Permit
 Reload
@@ -456,3 +455,13 @@ Run, devop\noeject.bat,,hide
 Return
 
 ^l::Run, devop\autohotkey-repo\wloop.ahk
+soundboard:
+#IfWinExist, ahk_exe soundpad.exe
+~F8 & 1::Send, ^+8 ;sneak
+~F8 & 2::Send, ^+1 ;wow
+~F8 & 3::Send, ^+2 ;holiday
+~F8 & 4::Send, ^+4 ;gta sa
+~F8 & 5::Send, ^+5 ;careless whisp
+~F8 & 6::Send, ^+6 ;chamber
+~F8 & 7::Send, ^+7 ;defuse
+#IfWinExist
