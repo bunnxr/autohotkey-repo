@@ -27,20 +27,20 @@ Loop, {
     sleep, 200
     WinWaitActive, ahk_exe VALORANT-Win64-Shipping.exe
     DllCall("SetCursorPos", "int", 305, "int", 338)
-    sleep, 90
-    MouseClick, Left
-    Sleep 50
+    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+    Sleep 150
     DllCall("SetCursorPos", "int", 305, "int", 450)
-    sleep, 90
-    MouseClick, Left
-    Sleep 50
+    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+    Sleep 150
     DllCall("SetCursorPos", "int", 305, "int", 565)
-    sleep, 90
-    MouseClick, Left
-    Sleep 50
+    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+    Sleep 150
     DllCall("SetCursorPos", "int", 305, "int", 681)
-    sleep, 90
-    MouseClick, Left
+    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
     WinWaitActive, ahk_exe VALORANT-Win64-Shipping.exe
     Sleep 100
     SendInput, {b}
@@ -55,20 +55,20 @@ Loop, {
     sleep, 300
     WinWaitActive, ahk_exe VALORANT-Win64-Shipping.exe
     DllCall("SetCursorPos", "int", 305, "int", 338)
-    sleep, 90
-    MouseClick, Left
-    Sleep 50
+    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+    Sleep 150
     DllCall("SetCursorPos", "int", 305, "int", 450)
-    sleep, 90
-    MouseClick, Left
-    Sleep 50
+    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+    Sleep 150
     DllCall("SetCursorPos", "int", 305, "int", 565)
-    sleep, 90
-    MouseClick, Left
-    Sleep 50
+    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+    Sleep 150
     DllCall("SetCursorPos", "int", 305, "int", 681)
-    sleep, 90
-    MouseClick, Left
+    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
     WinWaitActive, ahk_exe VALORANT-Win64-Shipping.exe
     Sleep 100
     SendInput, {b}

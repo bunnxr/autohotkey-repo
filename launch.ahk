@@ -45,5 +45,5 @@ Return
 secondexit:
 SplashTextOn,,, Omitting the launch..
 Sleep, 2000
-;Run, %comspec% /c taskkill /f /im msedge.exe,,hide
+Run, %comspec% /c taskkill /f /im msedge.exe,,hide
 gosub, Exit

@@ -99,9 +99,25 @@ Suspend, Permit
 DllCall("LockWorkStation")
 Return
 
-~BackSpace & Insert:: ;kill specific
-InputBox, killa, killa, name of exe, ,240,123
-Run, %comspec% /c taskkill /f /im %killa%.exe,,hide
+#IfWinNotActive, ahk_group CHARLie
+~Space & 1::InputBox, kill1, killa, name of exe, ,240,123
+~Space & 2::InputBox, kill2, killa, name of exe, ,240,123
+#IfWinNotActive
+~BackSpace & Insert::
+InputBox, kill3, killa, name of exe, ,240,123
+Gosub Kill
+Return
+
+Insert::
+KeyWait, Insert, U
+KeyWait, BackSpace, D T3
+If ErrorLevel
+    Return
+Else
+    Run, %comspec% /c taskkill /f /im %kill1%.exe,,hide
+    Run, %comspec% /c taskkill /f /im %kill2%.exe,,hide
+    Kill:
+    Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
 Return
 
 RAlt::SendInput #+f ;launch for browser search
@@ -147,13 +163,13 @@ InputBox, procu, SuspendIO, name of exe, ,240,123
 Gosub, appsus
 Return
 ~F6:: ;suspend application
-procu = TekkenGame-Win64-Shipping
+procu = discord
 appsus:
 Toggle := !Toggle
 If Toggle
-    Run, @charlie\pssuspend.exe %procu%.exe,, Hide
+    Run *RunAs @charlie\pssuspend.exe %procu%.exe,, Hide
 else
-    Run, @charlie\pssuspend.exe -r %procu%.exe,, Hide
+    Run *RunAs @charlie\pssuspend.exe -r %procu%.exe,, Hide
 return
 F7::
 Toggle := !Toggle
@@ -412,7 +428,7 @@ Return
 :*?:edge::msedge{enter}
 #IfWinActive
 
-Insert:: ;task killer
+;Insert:: ;task killer
 taskkill:
 Run, %comspec% /c taskkill /f /im gta_sa.exe,,hide
 Run, %comspec% /c taskkill /f /im VALORANT-Win64-Shipping.exe,,hide
