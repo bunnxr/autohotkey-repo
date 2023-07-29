@@ -1,14 +1,12 @@
-;mic mute code
 Home::  ; hotkey
-Suspend, Permit
 SoundSet, +1, MASTER, mute, %micid%
-mutemic:
 SoundGet, micvar, , mute, %micid%
 if (micvar = "Off")
     SoundPlay, devop\sounds\micon.mp3
 Else
     SoundPlay, devop\sounds\off.mp3
 seticon:
+SoundGet, micvar, , mute, %micid%
 if (micvar = "Off")
     Menu, Tray, Icon, devop\icons\orange.ico ;Menu, Tray, Icon, *
 Else

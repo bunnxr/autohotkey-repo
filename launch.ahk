@@ -15,6 +15,7 @@ if !A_IsAdmin
     ExitApp
 }
 Run, *RunAs devop\bunnxr.ahk(elevated).lnk,,Hide
+Run, devop\noeject.bat,,hide
 GetKeyState, str, CapsLock
 if (str = "D")
     gosub secondexit

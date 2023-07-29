@@ -1,20 +1,15 @@
 ﻿;bunnxr
 ;AutoHotkey v1.1.32.00 - November 24, 2019
-;NOTES FOR SELF :- # = Win, ! = Alt, ^ = Ctrl, + = Shift , & can be used combine two keys
-
+;# = Win, ! = Alt, ^ = Ctrl, + = Shift , & can be used combine two keys
 ;#NoTrayIcon
-#NoEnv  ;for performance and compatibility with future AutoHotkey releases.
-;#Warn
+#NoEnv
 #SingleInstance, force
 #Persistent
 #InstallKeybdHook
-#WinActivateForce
-;#Include, test.ahk
 DetectHiddenWindows, On
-;SetTitleMatchMode, RegEx
 SetTitleMatchMode, 2
-SendMode Input  ;for new scripts due to its superior speed and reliability.
-SetWorkingDir D:\  ;consistent start directory. 
+SendMode Input
+SetWorkingDir D:\ 
 ;Control, Hide, , Start1, ahk_class Shell_TrayWnd  ;can hide windows start button logo
 
 {
@@ -22,7 +17,6 @@ SetWorkingDir D:\  ;consistent start directory.
     Menu, Tray, NoStandard
     Menu, Tray, Add, Spy, Spy
     Menu, Tray, Add, MicID, MicID
-    ;Menu, Tray, Add, syncthing, syncthing
     Menu, Tray, Add, Ahk2exe, Compiler
     Menu, Tray, Add, DrvCache, drivecache
     Menu, Tray, Add, Reload, ^#r
@@ -35,43 +29,19 @@ SetWorkingDir D:\  ;consistent start directory.
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
     micid = 9
-    SoundGet, micvar, , mute, %micid%
-    ;Run syncthing\syncthing.bat,, hide ;syncthing in background
-    ;Suspend, On
-    gosub seticon ;WARNING: CONTAINS A RETURN, COMMANDS BELLOW WONT RUN
+    gosub seticon
 }
 Return
 
-suspendoff:
-Suspend, Off
-SoundBeep, 400
-Menu, Tray, Icon
-Return
-suspend:
-Suspend, On
-SoundBeep
-Menu, Tray, NoIcon
-Return
-Compiler:
-Run, @charlie\ahk2exe\Ahk2Exe.exe
-Return
-MicID:
-Run, @charlie\MicID.exe
-Return
-drivecache:
-Run, D:\drivecache
-Return
-Spy:
-Run, @charlie\WindowSpy.ahk
-Return
+#Include, %A_scriptdir%\ahkmenu.txt
+#Include, %A_scriptdir%\mymicmute.ahk
+#Include, %A_ScriptDir%\takefile.ahk
 
 caps:
 ~$Capslock Up::SetCapsLockState, Off ;disabling caps and instead using it as a key
-+$CapsLock Up::
-SetCapsLockState % !GetKeyState("CapsLock", "T")
-Return
++$CapsLock Up::SetCapsLockState % !GetKeyState("CapsLock", "T")
 
-Pause:: ;lockwindows
+$Pause:: ;lockwindows
 Suspend, Permit
 DllCall("LockWorkStation")
 Return
@@ -95,29 +65,17 @@ Else
     Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
 Return
 
-AppsKey:: ;drive search
-Send, ^!g
-Return
+AppsKey::Send, ^!g ;drive search
 
-LWin & WheelDown:: ; Workspace down
-SendInput {Ctrl down}{Lwin Down}{Right}{Lwin Up}{Ctrl Up}
-Return
-Lwin & WheelUp:: ; Workspace up
-SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up}
-Return
+LWin & WheelDown::SendInput {Ctrl down}{Lwin Down}{Right}{Lwin Up}{Ctrl Up} ;workspace down
+Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;workspace up
 
 #IfWinNotActive, ahk_group CHARLie
 `::WinMinimize,A ;minimizes active window.
 F1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
-;F2::
-;KeyWait, F2
-;IfWinNotExist, ahk_exe code.exe
-;run, haves\VSCode\code.exe
-
 F3::Run C:\Users\%A_UserName%\AppData ;appdata
 F4::Run D:\Drive\My Drive
 #IfWinNotActive
-
 ~F5 & F6:: ;suspend specific
 InputBox, procu, SuspendIO, name of exe, ,240,123
 Gosub, appsus
@@ -140,6 +98,9 @@ else
 return
 F12:: ;mute current windowF
 WinGet, WinProcessName, ProcessName, A
+If (WinProcessName = "VALORANT-Win64-Shipping.exe")
+    WinGet, valID, PID, ahk_exe VALORANT-Win64-Shipping.exe
+    WinProcessName = /%valID%
 Run, *RunAs @charlie\nircmd.exe muteappvolume %WinProcessName% 2
 Return
 
@@ -152,56 +113,32 @@ SendInput, {Media_Play_Pause}
 Return
 RShift & PgUp::SendInput, {Media_Next}
 RShift & PgDn::SendInput, {Media_Prev}
-~PgUp::SendInput, {Volume_Up}
-~PgDn::SendInput, {Volume_Down}
-
-#Include, %A_scriptdir%\mymicmute.ahk
+~PgUp::SendEvent, {Volume_Up}
+~PgDn::SendEvent, {Volume_Down}
 
 ~Capslock & home:: ;discord deafen
 Send, ^+!d
+gosub home
 Return
 
 #IfWinActive ahk_exe code.exe
-XButton1:: ;for breadcrumbs in VSCode
-SendInput, ^+{.}
-Return
+XButton1::SendInput, ^+{.} ;breadcrumbs vscode
 #IfWinActive
-
-;:*?:haha::shahaha
-;#If GetKeyState("Joy9")
-;Joy2::Send {f10}
-;Joy1::Run D:\tekken\tekken.lnk
-;Joy4::Gosub, taskkill
-;Joy3::Gosub, nircmd
-;#If
-
-#Include, %A_ScriptDir%\takefile.ahk
 
 #IfWinActive ahk_group discord
 dimscord:
 
 :*?:yuro::`:yoru`:{enter}
-:*?:vc::
-SendRaw, <#961579220595781644>
-Return
-:*?:ponrv::
-SendRaw, <#993475685660241972>
-Return
-
+:*?:vc::<{`#}961579220595781644>
+:*?:ponrv::<{`#}993475685660241972>
 :*?:itlic::**{left}
 :*?:bld::****{left}{left}
 :*?:strk::~~~~{left}{left}
 :*?:`(::`(`){left}
 
 AppsKey::Send ^g
-
-~Capslock::
-Send, ^k
-Return
-
-Tab::
-Send, {Ctrl Down}{i}{Ctrl Up}
-Return
+~Capslock::Send, ^k
+Tab::Send, {Ctrl Down}{i}{Ctrl Up}
 #IfWinActive
 
 #IfWinActive ahk_exe parsecd.exe
@@ -214,11 +151,9 @@ Winclose
 Return
 ~CapsLock & q::
 Send, ^+{i}
-;SetCapsLockState, AlwaysOff
 Return
 ~CapsLock & w::
 Send, ^+{w}
-;SetCapsLockState, AlwaysOff
 Return
 #IfWinActive
 ~CapsLock & Enter::
@@ -239,9 +174,6 @@ Left::^Left
 ~Capslock::
 Send, {LAlt Down}{3}{LAlt Up}{Enter}
 Return
-;~Capslock::
-;Send, ^f
-;Return
 #IFwinActive
 
 #IfWinActive killa
@@ -251,14 +183,12 @@ Return
 :*?:ds::discord{Enter}
 :*?:dc::discordcanary{Enter}
 :*?:edge::msedge{enter}
+:*?:valo::VALORANT-Win64-Shipping.exe{enter}
 #IfWinActive
 
 ;Insert:: ;task killer
 taskkill:
-Run, %comspec% /c taskkill /f /im gta_sa.exe,,hide
 Run, %comspec% /c taskkill /f /im VALORANT-Win64-Shipping.exe,,hide
-Run, %comspec% /c taskkill /f /im speed.exe,,hide
-Run, %comspec% /c taskkill /f /im halo.exe,,hide
 Run, %comspec% /c taskkill /f /im TekkenGame-Win64-Shipping.exe,,hide
 Run, %comspec% /c taskkill /f /im csgo.exe,,hide
 Sleep, 500

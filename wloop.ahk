@@ -2,6 +2,7 @@
 #NoEnv
 #Persistent
 #SingleInstance, Force
+#InstallKeybdHook
 SendMode Input
 DetectHiddenWindows, On
 SetTitleMatchMode, 2
@@ -44,8 +45,8 @@ Loop, {
     WinWaitActive, ahk_exe VALORANT-Win64-Shipping.exe
     Sleep 100
     SendInput, {b}
-    sleep, 50
-    SendInput, {g}
+    sleep 50
+    SendInput, {f}
     SendInput {shift Down}
     SendInput {d Down}
     sleep 600
@@ -73,12 +74,12 @@ Loop, {
     Sleep 100
     SendInput, {b}
     sleep, 50
-    SendInput, {g}
+    SendInput, {f}
     sleep 3700
 }
 Return
 howto:
 MsgBox, 262144, Wloop(by CHARLie), This version starts automatically when VALORANT gets active.`nTo close however, F9 key can be pressed `nor can be terminated via the taskbar
-F9::
+$F9::
 exit:
 ExitApp
