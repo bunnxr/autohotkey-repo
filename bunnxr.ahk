@@ -5,7 +5,7 @@
 #NoEnv
 #SingleInstance, force
 #Persistent
-#InstallKeybdHook
+;#InstallKeybdHook
 DetectHiddenWindows, On
 SetTitleMatchMode, 2
 SendMode Input
@@ -46,24 +46,23 @@ Suspend, Permit
 DllCall("LockWorkStation")
 Return
 
-~Backspace & 1::InputBox, kill1, killa, name of exe, ,240,123
-~Backspace & 2::InputBox, kill2, killa, name of exe, ,240,123
 ~BackSpace & Insert::
-InputBox, kill3, killa, name of exe, ,240,123
-Gosub Kill
+InputBox, kill3, com, , ,190,106,1650,40
+if (kill3 = "faz")
+    SoundPlay, %A_MyDocuments%\faz.mp3
+if (kill3 = "wano")
+    SoundPlay, %A_MyDocuments%\wano.mp3
+if (kill3 = "stop")
+    SoundPlay, stop.avi
+if (kill3 = "aot")
+    gosub aot
+if (kill3 = "wait")
+    InputBox, kill3, com, , ,190,106
+else
+    gosub insert
 Return
 
-Insert::
-KeyWait, Insert, U
-KeyWait, BackSpace, D T3
-If ErrorLevel
-    Return
-Else
-    Run, %comspec% /c taskkill /f /im %kill1%.exe,,hide
-    Run, %comspec% /c taskkill /f /im %kill2%.exe,,hide
-    Kill:
-    Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
-Return
+Insert::Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
 
 AppsKey::Send, ^!g ;drive search
 
@@ -130,7 +129,7 @@ dimscord:
 
 :*?:yuro::`:yoru`:{enter}
 :*?:vc::<{`#}961579220595781644>
-:*?:ponrv::<{`#}993475685660241972>
+:*?:2vc::<{`#}993475685660241972>
 :*?:itlic::**{left}
 :*?:bld::****{left}{left}
 :*?:strk::~~~~{left}{left}
@@ -176,7 +175,9 @@ Send, {LAlt Down}{3}{LAlt Up}{Enter}
 Return
 #IFwinActive
 
-#IfWinActive killa
+#IfWinActive ahk_class #32770
+:*?:aot::aot{enter}
+:*?:wait::wait{enter}
 :*?:note::ONENOTEM{enter}
 :*?:code::code{enter}
 :*?:drv::GoogleDriveFS{Enter}
@@ -184,6 +185,9 @@ Return
 :*?:dc::discordcanary{Enter}
 :*?:edge::msedge{enter}
 :*?:valo::VALORANT-Win64-Shipping.exe{enter}
+:*?:faz::faz{enter}
+:*?:wano::wano{enter}
+:*?:stop::stop{enter}
 #IfWinActive
 
 ;Insert:: ;task killer
