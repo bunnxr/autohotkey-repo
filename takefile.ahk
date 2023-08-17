@@ -68,6 +68,7 @@ SendInput, {`"}{`)}{space}
 SendRaw, { $ffile = "$($data[4])"}
 sleep 100
 SendInput, {space}`;Write-Progress "Completed $($data[0])"
+sleep 100
 SendInput, {space}-Activity "CHARLie"
 sleep 100
 SendInput, -CurrentOperation "$($ffile)"
@@ -91,12 +92,14 @@ Return
 SendInput, $fo = get-location | Select -expand path{enter}
 sleep 100
 SendInput, cd $server{enter}
+sleep 100
 SendInput, $filu = get-childitem -recurse{space}
 sleep 100
 SendRaw, | where {$_.name-match $t} | select -expand name
 SendInput, {enter}cd $fo{enter}
 sleep 100
 SendInput, robocopy $server $fo $filu /S /MT:6
+sleep 100
 gosub fileprog
 Return
 
@@ -104,6 +107,7 @@ fileprog:
 SendInput, {space}/ZB /J /B /Z /TBD /V
 sleep 100
 SendInput, {space}/njh /njs /ndl /nc /ns
+sleep 100
 SendInput, {space}| {`%}{`{}$data = $_.Split([char]9)
 sleep 100
 SendRaw, `; if("$($data[4])" -ne `"
@@ -113,9 +117,11 @@ sleep 100
 SendRaw, { $rfile = "$($data[4])"}
 sleep 100
 SendInput, {space}`;Write-Progress "Completed $($data[0])"
+sleep 100
 SendInput, {space}-Activity "CHARLie"
 sleep 100
 SendInput, -CurrentOperation "$($rfile)"
+sleep 100
 SendInput, {space}{space}-ErrorAction SilentlyContinue`; {`}}{enter}
 Return
 
