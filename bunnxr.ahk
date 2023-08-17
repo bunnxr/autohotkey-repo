@@ -28,7 +28,8 @@ SetWorkingDir D:\
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
-    micid = 9
+    micid = 6
+    appvol := spotify
     gosub seticon
 }
 Return
@@ -178,11 +179,11 @@ Return
 #IfWinActive ahk_class #32770
 :*?:aot::aot{enter}
 :*?:wait::wait{enter}
-:*?:note::ONENOTEM{enter}
+:*?:pars::parsecd{enter}
 :*?:code::code{enter}
 :*?:drv::GoogleDriveFS{Enter}
 :*?:ds::discord{Enter}
-:*?:dc::discordcanary{Enter}
+:*?:spot::spotify{enter}
 :*?:edge::msedge{enter}
 :*?:valo::VALORANT-Win64-Shipping.exe{enter}
 :*?:faz::faz{enter}
@@ -200,9 +201,11 @@ Return
 ~alt & 3::Send {alt down}{Numpad3}{alt up} ;valorant heart
 
 slowdown:
+Run, *RunAs @charlie\nircmd.exe changeappvolume "Spotify.exe" 1
 Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" 1
 Loop, 8
 {
+    Run, *RunAs @charlie\nircmd.exe changeappvolume "Spotify.exe" -0.1
     Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" -0.1
     Sleep, 65
 }
@@ -210,6 +213,7 @@ Return
 Slowup:
 Loop, 8
 {
+    Run, *RunAs @charlie\nircmd.exe changeappvolume "Spotify.exe" 0.1
     Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" 0.1
     Sleep, 65
 }
