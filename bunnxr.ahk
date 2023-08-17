@@ -48,7 +48,7 @@ DllCall("LockWorkStation")
 Return
 
 ~BackSpace & Insert::
-InputBox, kill3, com, , ,190,106,1650,40
+InputBox, kill3, com, , ,190,106 ;1650,40
 if (kill3 = "faz")
     SoundPlay, %A_MyDocuments%\faz.mp3
 if (kill3 = "wano")
