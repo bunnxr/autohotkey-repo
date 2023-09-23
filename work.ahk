@@ -21,9 +21,9 @@ LWin & WheelDown::SendInput {Ctrl down}{Lwin Down}{Right}{Lwin Up}{Ctrl Up} ;wor
 Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;workspace up
 
 ^#\::
-Run, %USERPROFILE%\Documents\hellow.ahk,,UseErrorLevel
-If ErrorLevel
-    Return
+run, notepad.exe %A_ScriptFullPath%
+Return
+
 ^#E::
 Run, %comspec% /c taskkill /f /im explorer.exe,,hide
 Sleep, 400
