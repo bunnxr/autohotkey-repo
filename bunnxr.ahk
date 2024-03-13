@@ -11,7 +11,13 @@ SetTitleMatchMode, 2
 SendMode Input
 SetWorkingDir D:\ 
 ;Control, Hide, , Start1, ahk_class Shell_TrayWnd  ;can hide windows start button logo
-
+if !A_IsAdmin
+{
+    Run *RunAs "%A_AhkPath%" "%A_ScriptFullPath%"
+    ;add "%A_AhkPath%" if there's .ahk
+    ;WARNING:remove ahkpath if script is compiled
+    ExitApp
+}
 {
     ;required at script startup
     Menu, Tray, NoStandard
@@ -28,8 +34,9 @@ SetWorkingDir D:\
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
-    micid = 6
+    micid = 5
     appvol := spotify
+    procu = Discord
     gosub seticon
 }
 Return
@@ -73,6 +80,7 @@ Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;worksp
 #IfWinNotActive, ahk_group CHARLie
 `::WinMinimize,A ;minimizes active window.
 F1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
+;\\?\Volume{0215518d-0000-0000-0000-100000000000}\
 F3::Run C:\Users\%A_UserName%\AppData ;appdata
 F4::Run D:\Drive\My Drive
 #IfWinNotActive
@@ -81,7 +89,6 @@ InputBox, procu, SuspendIO, name of exe, ,240,123
 Gosub, appsus
 Return
 ~F6:: ;suspend application
-procu = discord
 appsus:
 Toggle := !Toggle
 If Toggle
@@ -99,9 +106,11 @@ return
 F12:: ;mute current windowF
 WinGet, WinProcessName, ProcessName, A
 If (WinProcessName = "VALORANT-Win64-Shipping.exe")
+{
     WinGet, valID, PID, ahk_exe VALORANT-Win64-Shipping.exe
     WinProcessName = /%valID%
-Run, *RunAs @charlie\nircmd.exe muteappvolume %WinProcessName% 2
+}
+Run, *RunAs @charlie\nirc.exe muteappvolume %WinProcessName% 2,,hide
 Return
 
 ~LAlt & `::SendInput {``} ;sending the grace accent as it was muted
@@ -170,6 +179,11 @@ Right::^Right
 Left::^Left
 #IfWinActive
 
+#IFwinActive YouTube
+,::Send +,
+.::Send +.
+#IFwinActive
+
 #IFwinActive ahk_exe explorer.exe
 ~Capslock::
 Send, {LAlt Down}{3}{LAlt Up}{Enter}
@@ -191,6 +205,23 @@ Return
 :*?:stop::stop{enter}
 #IfWinActive
 
+#IfWinActive aniwatch.to
+space::
+DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+Return
+F::
+DllCall("SetCursorPos", "int", 1515, "int", 841)
+DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+Return
+n::
+DllCall("SetCursorPos", "int", 1263, "int", 910)
+DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+Return
+#IfWinActive
+
 ;Insert:: ;task killer
 taskkill:
 Run, %comspec% /c taskkill /f /im VALORANT-Win64-Shipping.exe,,hide
@@ -201,20 +232,20 @@ Return
 ~alt & 3::Send {alt down}{Numpad3}{alt up} ;valorant heart
 
 slowdown:
-Run, *RunAs @charlie\nircmd.exe changeappvolume "Spotify.exe" 1
-Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" 1
+Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" 1,,hide
+Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 1,,hide
 Loop, 8
 {
-    Run, *RunAs @charlie\nircmd.exe changeappvolume "Spotify.exe" -0.1
-    Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" -0.1
+    Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" -0.1,,hide
+    Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" -0.1,,hide
     Sleep, 65
 }
 Return
 Slowup:
 Loop, 8
 {
-    Run, *RunAs @charlie\nircmd.exe changeappvolume "Spotify.exe" 0.1
-    Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" 0.1
+    Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" 0.1,,hide
+    Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 0.1,,hide
     Sleep, 65
 }
 Return

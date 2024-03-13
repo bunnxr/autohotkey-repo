@@ -8,7 +8,7 @@ Return
 SendInput, powershell{enter}
 pwsh:
 Sleep 400
-SendInput $server = "\\deploychrli\share\"{enter}
+SendInput $server = "\\chrli\share\"{enter}
 Sleep 200
 SendRaw, function prompt {"chrli_ $pwd $ "}
 Sleep 100
@@ -34,7 +34,7 @@ SendInput, $fold = get-childitem -dir -recurse{space}
 sleep 100
 SendRaw, | Where {$_.name-match $f} | Select -expand name
 sleep 100
-SendInput, {enter}robocopy $fold \\deploychrli\share\$fold
+SendInput, {enter}robocopy $fold \\chrli\share\$fold
 sleep 100
 gosub foldprog
 Return
@@ -83,7 +83,7 @@ SendRaw, | where {$_.name-match $t} | select -expand name
 sleep 100
 SendInput, {enter}$fo = get-location | Select -expand path
 sleep 100
-SendInput, {enter}robocopy $fo \\deploychrli\share\ $filu /S /MT:6
+SendInput, {enter}robocopy $fo \\chrli\share\ $filu /S /MT:6
 gosub fileprog
 Return
 
@@ -135,6 +135,28 @@ Return
 SendInput, $own = get-childitem -recurse{space}
 SendRaw, | Where {$_.name-match $t} | Select -expand name
 SendInput, {enter}takeown /f $own{enter}
+Return
+
+;:*?:getbits::
+WinWaitActive, ahk_exe powershell.exe
+SendRaw, $host.UI.RawUI.WindowTitle = "CHARLie"
+SendInput, {enter}$source=""
+sleep 100
+SendInput, {left}
+Sleep, 700
+SendRaw, https://docs.google.com/
+SendRaw, uc?export=download&confirm=t&id=
+SendInput, %Clipboard%{enter}
+Sleep 300
+SendInput, $fo = get-location | Select -expand path{enter}
+Sleep 200
+SendInput, $lo = Get-Date -UFormat "`%d:`%m:`%Y-`%R"{enter}
+Sleep 100
+SendInput, $to = `"$fo$lo`"{enter}
+SendInput, clear{enter}
+SendInput, start-bitstransfer -source $source{space}
+SendInput, -destination $to -displayname CHARLie{space}
+SendInput, -priority foreground{enter}
 Return
 
 :*?:zr2j::zerotier-cli join 17d709436c8fbe93{Enter}
