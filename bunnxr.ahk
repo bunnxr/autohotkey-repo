@@ -34,13 +34,12 @@ if !A_IsAdmin
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
-    micid = 5
+    micid = 6
     appvol := spotify
     procu = Discord
     gosub seticon
 }
 Return
-
 #Include, %A_scriptdir%\ahkmenu.txt
 #Include, %A_scriptdir%\mymicmute.ahk
 #Include, %A_ScriptDir%\takefile.ahk
@@ -49,30 +48,12 @@ caps:
 ~$Capslock Up::SetCapsLockState, Off ;disabling caps and instead using it as a key
 +$CapsLock Up::SetCapsLockState % !GetKeyState("CapsLock", "T")
 
-$Pause:: ;lockwindows
+;$Pause:: ;lockwindows
 Suspend, Permit
 DllCall("LockWorkStation")
 Return
 
-~BackSpace & Insert::
-InputBox, kill3, com, , ,190,106 ;1650,40
-if (kill3 = "faz")
-    SoundPlay, %A_MyDocuments%\faz.mp3
-if (kill3 = "wano")
-    SoundPlay, %A_MyDocuments%\wano.mp3
-if (kill3 = "stop")
-    SoundPlay, stop.avi
-if (kill3 = "aot")
-    gosub aot
-if (kill3 = "wait")
-    InputBox, kill3, com, , ,190,106
-else
-    gosub insert
-Return
-
-Insert::Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
-
-AppsKey::Send, ^!g ;drive search
+~AppsKey::Send, ^!g ;drive search
 
 LWin & WheelDown::SendInput {Ctrl down}{Lwin Down}{Right}{Lwin Up}{Ctrl Up} ;workspace down
 Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;workspace up
@@ -83,18 +64,30 @@ F1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
 ;\\?\Volume{0215518d-0000-0000-0000-100000000000}\
 F3::Run C:\Users\%A_UserName%\AppData ;appdata
 F4::Run D:\Drive\My Drive
++space::gosub com
 #IfWinNotActive
-~F5 & F6:: ;suspend specific
-InputBox, procu, SuspendIO, name of exe, ,240,123
-Gosub, appsus
+
+com:
+InputBox, kill3, com, , ,190,106 ;1650,40
+if (kill3 = "aot")
+    gosub aot
+if (kill3 = "work")
+    gosub work
+if (kill3 = "play")
+    gosub play
+if (kill3 = "wait")
+    InputBox, kill3, com, , ,190,106
+else
+    Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
 Return
-~F6:: ;suspend application
-appsus:
+
+pause:: ;suspend specific
+InputBox, procu, SuspendIO,, ,190,106
 Toggle := !Toggle
 If Toggle
-    Run *RunAs @charlie\pssuspend.exe %procu%.exe,, Hide
+    Run *RunAs @charlie\suspend.exe %procu%,, Hide
 else
-    Run *RunAs @charlie\pssuspend.exe -r %procu%.exe,, Hide
+    Run *RunAs @charlie\suspend.exe -r %procu%,, Hide
 return
 F7::
 Toggle := !Toggle
@@ -112,18 +105,18 @@ If (WinProcessName = "VALORANT-Win64-Shipping.exe")
 }
 Run, *RunAs @charlie\nirc.exe muteappvolume %WinProcessName% 2,,hide
 Return
+F13::gosub aot
 
 ~LAlt & `::SendInput {``} ;sending the grace accent as it was muted
  
 MEDIAKEYS:
-PgUp & PgDn::
-PgDn & PgUp::
+#space::
 SendInput, {Media_Play_Pause}
 Return
 RShift & PgUp::SendInput, {Media_Next}
 RShift & PgDn::SendInput, {Media_Prev}
-~PgUp::SendEvent, {Volume_Up}
-~PgDn::SendEvent, {Volume_Down}
+~F8 & WheelUp::SendEvent, {Volume_Up}
+~F8 & WheelDown::SendEvent, {Volume_Down}
 
 ~Capslock & home:: ;discord deafen
 Send, ^+!d
@@ -179,18 +172,9 @@ Right::^Right
 Left::^Left
 #IfWinActive
 
-#IFwinActive YouTube
-,::Send +,
-.::Send +.
-#IFwinActive
-
-#IFwinActive ahk_exe explorer.exe
-~Capslock::
-Send, {LAlt Down}{3}{LAlt Up}{Enter}
-Return
-#IFwinActive
-
 #IfWinActive ahk_class #32770
+:*?:play::play{enter}
+:*?:work::work{enter}
 :*?:aot::aot{enter}
 :*?:wait::wait{enter}
 :*?:pars::parsecd{enter}
@@ -199,42 +183,26 @@ Return
 :*?:ds::discord{Enter}
 :*?:spot::spotify{enter}
 :*?:edge::msedge{enter}
-:*?:valo::VALORANT-Win64-Shipping.exe{enter}
+:*?:valo::VALORANT-Win64-Shipping{enter}
 :*?:faz::faz{enter}
 :*?:wano::wano{enter}
 :*?:stop::stop{enter}
 #IfWinActive
 
-#IfWinActive aniwatch.to
-space::
-DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
-DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
-Return
-F::
+/*
+dll mouseclick and pos
 DllCall("SetCursorPos", "int", 1515, "int", 841)
 DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
 DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
-Return
-n::
-DllCall("SetCursorPos", "int", 1263, "int", 910)
-DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
-DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
-Return
-#IfWinActive
+*/
 
 ;Insert:: ;task killer
-taskkill:
-Run, %comspec% /c taskkill /f /im VALORANT-Win64-Shipping.exe,,hide
-Run, %comspec% /c taskkill /f /im TekkenGame-Win64-Shipping.exe,,hide
-Run, %comspec% /c taskkill /f /im csgo.exe,,hide
-Sleep, 500
-Return
 ~alt & 3::Send {alt down}{Numpad3}{alt up} ;valorant heart
 
 slowdown:
 Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" 1,,hide
 Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 1,,hide
-Loop, 8
+Loop, 9
 {
     Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" -0.1,,hide
     Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" -0.1,,hide
@@ -242,12 +210,25 @@ Loop, 8
 }
 Return
 Slowup:
-Loop, 8
+Loop, 9
 {
     Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" 0.1,,hide
     Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 0.1,,hide
     Sleep, 65
 }
+Return
+
+work:
+Send, #4
+Send, #1
+Run, devop\ds.lnk
+Return
+
+play:
+Run, %comspec% /c taskkill /f /im msedge.exe,,hide
+Run, %comspec% /c taskkill /f /im parsecd.exe,,hide
+Run, %comspec% /c taskkill /f /im code.exe,,hide
+Run, %comspec% /c taskkill /f /im discord.exe,,hide
 Return
 
 ^#E::
