@@ -29,15 +29,25 @@ if !A_IsAdmin
     Menu, Tray, Add, Terminate, #Delete
     GroupAdd, CHARLie, ahk_exe VALORANT-Win64-Shipping.exe
     GroupAdd, CHARLie, ahk_exe csgo.exe
+    GroupAdd, CHARLie, ahk_exe haloce.exe
     GroupAdd, cmd, ahk_exe cmd.exe
     GroupAdd, cmd, ahk_exe powershell.exe
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
-    micid = 6
+    micid = 9
     appvol := spotify
     procu = Discord
     gosub seticon
+    run, devop\noeject.bat
+    ChangeResolution( cD, sW, sH, rR ) 
+{ 
+    VarSetCapacity(dM,156,0), NumPut(156,2,&dM,36) 
+    DllCall( "EnumDisplaySettingsA", UInt,0, UInt,-1, UInt,&dM ), 
+    NumPut(0x5c0000,dM,40)
+    NumPut(cD,dM,104), NumPut(sW,dM,108), NumPut(sH,dM,112), NumPut(rR,dM,120) 
+    Return DllCall( "ChangeDisplaySettingsA", UInt,&dM, UInt,0 ) 
+}
 }
 Return
 #Include, %A_scriptdir%\ahkmenu.txt
@@ -62,12 +72,13 @@ Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;worksp
 `::WinMinimize,A ;minimizes active window.
 F1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
 ;\\?\Volume{0215518d-0000-0000-0000-100000000000}\
+F2::Run D:\On\
 F3::Run C:\Users\%A_UserName%\AppData ;appdata
-F4::Run D:\Drive\My Drive
-+space::gosub com
+F4::Run %A_WinDir%\System32\SndVol.exe
+;F13::SendEvent, +c
 #IfWinNotActive
 
-com:
+#space::
 InputBox, kill3, com, , ,190,106 ;1650,40
 if (kill3 = "aot")
     gosub aot
@@ -75,6 +86,10 @@ if (kill3 = "work")
     gosub work
 if (kill3 = "play")
     gosub play
+if (kill3 = "ss")
+    run, D:\haves\vlc\vlc.exe --fullscreen --no-audio --playlist-autostart --loop --playlist-tree F:\downs\snoop\
+if (kill3 = "bean1")
+    run, D:\haves\vlc\vlc.exe --fullscreen --no-audio F:\downs\bean1.mp4
 if (kill3 = "wait")
     InputBox, kill3, com, , ,190,106
 else
@@ -110,18 +125,15 @@ F13::gosub aot
 ~LAlt & `::SendInput {``} ;sending the grace accent as it was muted
  
 MEDIAKEYS:
-#space::
+~capslock & space::
 SendInput, {Media_Play_Pause}
 Return
-RShift & PgUp::SendInput, {Media_Next}
-RShift & PgDn::SendInput, {Media_Prev}
+;RShift & PgUp::SendInput, {Media_Next}
+;RShift & PgDn::SendEvent, {Media_Prev}
 ~F8 & WheelUp::SendEvent, {Volume_Up}
 ~F8 & WheelDown::SendEvent, {Volume_Down}
 
-~Capslock & home:: ;discord deafen
-Send, ^+!d
-gosub home
-Return
+~Space & `::SendInput, #+F ;edge search bar
 
 #IfWinActive ahk_exe code.exe
 XButton1::SendInput, ^+{.} ;breadcrumbs vscode
@@ -172,7 +184,14 @@ Right::^Right
 Left::^Left
 #IfWinActive
 
+#IfWinActive YouTube
+[::SendInput, {<}
+]::SendInput, {>}
+#IfWinActive
+
 #IfWinActive ahk_class #32770
+:*?:ss::ss{enter}
+:*?:bean::bean1{enter}
 :*?:play::play{enter}
 :*?:work::work{enter}
 :*?:aot::aot{enter}
@@ -189,6 +208,16 @@ Left::^Left
 :*?:stop::stop{enter}
 #IfWinActive
 
+#IfWinActive ahk_exe taskmgr.exe
+CapsLock::
+DllCall("mouse_event", "UInt", 0x02)
+DllCall("mouse_event", "UInt", 0x04)
+DllCall("mouse_event", "UInt", 0x08)
+DllCall("mouse_event", "UInt", 0x10)
+SendInput, {t}
+SendInput, {Enter}
+Return
+#IfWinActive
 /*
 dll mouseclick and pos
 DllCall("SetCursorPos", "int", 1515, "int", 841)
@@ -197,12 +226,19 @@ DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
 */
 
 ;Insert:: ;task killer
+;VALORANT
 ~alt & 3::Send {alt down}{Numpad3}{alt up} ;valorant heart
+~Lalt & 0:: 
+ChangeResolution(32,1024,768,100) 
+return
+~Lalt & -:: 
+ChangeResolution(32,1920,1080,100) 
+return
 
 slowdown:
 Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" 1,,hide
 Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 1,,hide
-Loop, 9
+Loop, 7
 {
     Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" -0.1,,hide
     Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" -0.1,,hide
@@ -210,7 +246,7 @@ Loop, 9
 }
 Return
 Slowup:
-Loop, 9
+Loop, 7
 {
     Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" 0.1,,hide
     Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 0.1,,hide
@@ -219,9 +255,9 @@ Loop, 9
 Return
 
 work:
-Send, #4
 Send, #1
 Run, devop\ds.lnk
+Run, devop\parsec.lnk
 Return
 
 play:
