@@ -64,7 +64,7 @@ F1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
 ;\\?\Volume{0215518d-0000-0000-0000-100000000000}\
 F3::Run C:\Users\%A_UserName%\AppData ;appdata
 F4::Run D:\Drive\My Drive
-+space::gosub com
+#space::gosub com
 #IfWinNotActive
 
 com:
