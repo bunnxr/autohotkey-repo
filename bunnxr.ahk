@@ -1,4 +1,5 @@
-﻿;bunnxr
+﻿;tanuj accha aadmi hai
+;bunnxr
 ;AutoHotkey v1.1.32.00 - November 24, 2019
 ;# = Win, ! = Alt, ^ = Ctrl, + = Shift , & can be used combine two keys
 ;#NoTrayIcon
@@ -42,7 +43,7 @@ if !A_IsAdmin
 Return
 #Include, %A_scriptdir%\ahkmenu.txt
 #Include, %A_scriptdir%\mymicmute.ahk
-#Include, %A_ScriptDir%\takefile.ahk
+;#Include, %A_ScriptDir%\takefile.ahk
 
 caps:
 ~$Capslock Up::SetCapsLockState, Off ;disabling caps and instead using it as a key
@@ -75,6 +76,8 @@ if (kill3 = "work")
     gosub work
 if (kill3 = "play")
     gosub play
+if (kill3 = "gpt")
+    run, https://chatgpt.com/?temporary-chat=true
 if (kill3 = "wait")
     InputBox, kill3, com, , ,190,106
 else
@@ -164,7 +167,25 @@ Return
 ~CapsLock & x::
 SendInput, ^{F3} ;sends kick all to parsec
 Return
- 
+
+#IfWinActive ahk_exe valheim.exe
+[::
+DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+Return
+]::
+DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+Return
+g:
+DllCall("mouse_event", "UInt", 0x08)
+Sleep 30
+Dllcall("keybd_event", int, 32, int, 57, int, 0, int, 0)
+Sleep 40
+DllCall("mouse_event", "UInt", 0x10)
+Sleep 40
+Dllcall("keybd_event", int, 32, int, 57, int, 2, int, 0)
+Return
+#IfWinActive
+
 #IfWinActive ahk_exe spotify.exe
 Up::^Up
 Down::^Down
@@ -173,6 +194,7 @@ Left::^Left
 #IfWinActive
 
 #IfWinActive ahk_class #32770
+:*?:gpt::gpt{enter}
 :*?:play::play{enter}
 :*?:work::work{enter}
 :*?:aot::aot{enter}
