@@ -74,10 +74,25 @@ Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;worksp
 F1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
 F3::Run C:\Users\%A_UserName%\AppData ;appdata
 F4::Run D:\Drive\My Drive
+F2::Run D:\on
+#space::gosub com
 #IfWinNotActive
 ~F5 & F6:: ;suspend specific
 InputBox, procu, SuspendIO, name of exe, ,240,123
 Gosub, appsus
+
+com:
+InputBox, kill3, com, , ,190,106 ;1650,40
+if (kill3 = "aot")
+    gosub aot
+if (kill3 = "work")
+    gosub work
+if (kill3 = "gpt")
+    run, https://chatgpt.com/?temporary-chat=true
+if (kill3 = "wait")
+    InputBox, kill3, com, , ,190,106
+else
+    Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
 Return
 ~F6:: ;suspend application
 procu = discord
@@ -115,10 +130,6 @@ RShift & PgDn::SendInput, {Media_Prev}
 ~PgUp::SendEvent, {Volume_Up}
 ~PgDn::SendEvent, {Volume_Down}
 
-~Capslock & home:: ;discord deafen
-Send, ^+!d
-gosub home
-Return
 
 #IfWinActive ahk_exe code.exe
 XButton1::SendInput, ^+{.} ;breadcrumbs vscode
@@ -126,15 +137,13 @@ XButton1::SendInput, ^+{.} ;breadcrumbs vscode
 
 #IfWinActive ahk_group discord
 dimscord:
-
-:*?:yuro::`:yoru`:{enter}
+:*?:yoru::`:yoru`:{enter}
 :*?:vc::<{`#}961579220595781644>
-:*?:2vc::<{`#}993475685660241972>
+:*?:v2c::<{`#}993475685660241972>
 :*?:itlic::**{left}
 :*?:bld::****{left}{left}
 :*?:strk::~~~~{left}{left}
 :*?:`(::`(`){left}
-
 AppsKey::Send ^g
 ~Capslock::Send, ^k
 Tab::Send, {Ctrl Down}{i}{Ctrl Up}
@@ -167,6 +176,23 @@ Up::^Up
 Down::^Down
 Right::^Right
 Left::^Left
+
+#IfWinActive ahk_exe valheim.exe
+[::
+DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+Return
+]::
+DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+Return
+g:
+DllCall("mouse_event", "UInt", 0x08)
+Sleep 30
+Dllcall("keybd_event", int, 32, int, 57, int, 0, int, 0)
+Sleep 40
+DllCall("mouse_event", "UInt", 0x10)
+Sleep 40
+Dllcall("keybd_event", int, 32, int, 57, int, 2, int, 0)
+Return
 #IfWinActive
 
 #IFwinActive ahk_exe explorer.exe
@@ -202,8 +228,11 @@ Return
 slowdown:
 Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" 1
 Loop, 8
+Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 1,,hide
+Loop, 9
 {
     Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" -0.1
+    Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" -0.1,,hide
     Sleep, 65
 }
 Return
@@ -211,8 +240,14 @@ Slowup:
 Loop, 8
 {
     Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" 0.1
+    Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 0.1,,hide
     Sleep, 65
 }
+Return
+
+work:
+Send, #1
+Run, devop\ds.lnk
 Return
 
 ^#E::
