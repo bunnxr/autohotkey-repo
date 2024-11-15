@@ -73,9 +73,6 @@ F4::Run D:\Drive\My Drive
 F2::Run D:\on
 #space::gosub com
 #IfWinNotActive
-~F5 & F6:: ;suspend specific
-InputBox, procu, SuspendIO, name of exe, ,240,123
-Gosub, appsus
 
 com:
 InputBox, kill3, com, , ,190,106 ;1650,40
