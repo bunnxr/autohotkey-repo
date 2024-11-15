@@ -2,9 +2,12 @@ Home::  ; hotkey
 SoundSet, +1, MASTER, mute, %micid%
 SoundGet, micvar, , mute, %micid%
 if (micvar = "Off")
-    SoundPlay, devop\sounds\micon.mp3
+	loop 2
+	{
+		SoundBeep, 700, 100
+	}
 Else
-    SoundPlay, devop\sounds\off.mp3
+    SoundBeep, 700, 100
 seticon:
 SoundGet, micvar, , mute, %micid%
 if (micvar = "Off")
@@ -12,6 +15,7 @@ if (micvar = "Off")
 Else
     Menu, Tray, Icon, devop\icons\skully.ico
 Return
+/*
 #if (micvar = "Off")
 	~F8::
 	Suspend, Permit
@@ -33,3 +37,4 @@ Return
 	SoundSet, 1, MASTER, mute, %micid%
 	Return
 #if
+*/

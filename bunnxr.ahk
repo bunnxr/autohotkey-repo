@@ -1,4 +1,5 @@
-﻿;bunnxr
+﻿;tanuj accha aadmi hai
+;bunnxr
 ;AutoHotkey v1.1.32.00 - November 24, 2019
 ;# = Win, ! = Alt, ^ = Ctrl, + = Shift , & can be used combine two keys
 ;#NoTrayIcon
@@ -15,6 +16,14 @@ SetWorkingDir D:\
 Control, Hide, , TrayShowDesktopButtonWClass1, ahk_class Shell_TrayWnd
 ;hides the show desktop button taskbar
 
+;Control, Hide, , Start1, ahk_class Shell_TrayWnd  ;can hide windows start button logo
+if !A_IsAdmin
+{
+    Run *RunAs "%A_AhkPath%" "%A_ScriptFullPath%"
+    ;add "%A_AhkPath%" if there's .ahk
+    ;WARNING:remove ahkpath if script is compiled
+    ExitApp
+}
 {
     ;required at script startup
     Menu, Tray, NoStandard
@@ -31,43 +40,26 @@ Control, Hide, , TrayShowDesktopButtonWClass1, ahk_class Shell_TrayWnd
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
-    micid = 9
+    micid = 6
+    appvol := spotify
+    procu = Discord
     gosub seticon
 }
 Return
-
 #Include, %A_scriptdir%\ahkmenu.txt
 #Include, %A_scriptdir%\mymicmute.ahk
-#Include, %A_ScriptDir%\takefile.ahk
+;#Include, %A_ScriptDir%\takefile.ahk
 
 caps:
 ~$Capslock Up::SetCapsLockState, Off ;disabling caps and instead using it as a key
 +$CapsLock Up::SetCapsLockState % !GetKeyState("CapsLock", "T")
 
-$Pause:: ;lockwindows
+;$Pause:: ;lockwindows
 Suspend, Permit
 DllCall("LockWorkStation")
 Return
 
-~BackSpace & Insert::
-InputBox, kill3, com, , ,190,106,1650,40
-if (kill3 = "faz")
-    SoundPlay, %A_MyDocuments%\faz.mp3
-if (kill3 = "wano")
-    SoundPlay, %A_MyDocuments%\wano.mp3
-if (kill3 = "stop")
-    SoundPlay, stop.avi
-if (kill3 = "aot")
-    gosub aot
-if (kill3 = "wait")
-    InputBox, kill3, com, , ,190,106
-else
-    gosub insert
-Return
-
-Insert::Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
-
-AppsKey::Send, ^!g ;drive search
+~AppsKey::Send, ^!g ;drive search
 
 LWin & WheelDown::SendInput {Ctrl down}{Lwin Down}{Right}{Lwin Up}{Ctrl Up} ;workspace down
 Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;workspace up
@@ -75,9 +67,11 @@ Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;worksp
 #IfWinNotActive, ahk_group CHARLie
 `::WinMinimize,A ;minimizes active window.
 F1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
+;\\?\Volume{0215518d-0000-0000-0000-100000000000}\
 F3::Run C:\Users\%A_UserName%\AppData ;appdata
 F4::Run D:\Drive\My Drive
 F2::Run D:\on
+#space::gosub com
 #space::gosub com
 #IfWinNotActive
 ~F5 & F6:: ;suspend specific
@@ -96,15 +90,30 @@ if (kill3 = "wait")
     InputBox, kill3, com, , ,190,106
 else
     Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
+
+com:
+InputBox, kill3, com, , ,190,106 ;1650,40
+if (kill3 = "aot")
+    gosub aot
+if (kill3 = "work")
+    gosub work
+if (kill3 = "play")
+    gosub play
+if (kill3 = "gpt")
+    run, https://chatgpt.com/?temporary-chat=true
+if (kill3 = "wait")
+    InputBox, kill3, com, , ,190,106
+else
+    Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
 Return
-~F6:: ;suspend application
-procu = discord
-appsus:
+
+pause:: ;suspend specific
+InputBox, procu, SuspendIO,, ,190,106
 Toggle := !Toggle
 If Toggle
-    Run *RunAs @charlie\pssuspend.exe %procu%.exe,, Hide
+    Run *RunAs @charlie\suspend.exe %procu%,, Hide
 else
-    Run *RunAs @charlie\pssuspend.exe -r %procu%.exe,, Hide
+    Run *RunAs @charlie\suspend.exe -r %procu%,, Hide
 return
 F7::
 Toggle := !Toggle
@@ -116,22 +125,24 @@ return
 F12:: ;mute current windowF
 WinGet, WinProcessName, ProcessName, A
 If (WinProcessName = "VALORANT-Win64-Shipping.exe")
+{
     WinGet, valID, PID, ahk_exe VALORANT-Win64-Shipping.exe
     WinProcessName = /%valID%
-Run, *RunAs @charlie\nircmd.exe muteappvolume %WinProcessName% 2
+}
+Run, *RunAs @charlie\nirc.exe muteappvolume %WinProcessName% 2,,hide
 Return
+F13::gosub aot
 
 ~LAlt & `::SendInput {``} ;sending the grace accent as it was muted
  
 MEDIAKEYS:
-PgUp & PgDn::
-PgDn & PgUp::
+#space::
 SendInput, {Media_Play_Pause}
 Return
 RShift & PgUp::SendInput, {Media_Next}
 RShift & PgDn::SendInput, {Media_Prev}
-~PgUp::SendEvent, {Volume_Up}
-~PgDn::SendEvent, {Volume_Down}
+~F8 & WheelUp::SendEvent, {Volume_Up}
+~F8 & WheelDown::SendEvent, {Volume_Down}
 
 
 #IfWinActive ahk_exe code.exe
@@ -173,7 +184,25 @@ Return
 ~CapsLock & x::
 SendInput, ^{F3} ;sends kick all to parsec
 Return
- 
+
+#IfWinActive ahk_exe valheim.exe
+[::
+DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+Return
+]::
+DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+Return
+g:
+DllCall("mouse_event", "UInt", 0x08)
+Sleep 30
+Dllcall("keybd_event", int, 32, int, 57, int, 0, int, 0)
+Sleep 40
+DllCall("mouse_event", "UInt", 0x10)
+Sleep 40
+Dllcall("keybd_event", int, 32, int, 57, int, 2, int, 0)
+Return
+#IfWinActive
+
 #IfWinActive ahk_exe spotify.exe
 Up::^Up
 Down::^Down
@@ -198,34 +227,32 @@ Dllcall("keybd_event", int, 32, int, 57, int, 2, int, 0)
 Return
 #IfWinActive
 
-#IFwinActive ahk_exe explorer.exe
-~Capslock::
-Send, {LAlt Down}{3}{LAlt Up}{Enter}
-Return
-#IFwinActive
-
 #IfWinActive ahk_class #32770
+:*?:gpt::gpt{enter}
+:*?:play::play{enter}
+:*?:work::work{enter}
 :*?:aot::aot{enter}
 :*?:wait::wait{enter}
-:*?:note::ONENOTEM{enter}
+:*?:pars::parsecd{enter}
 :*?:code::code{enter}
 :*?:drv::GoogleDriveFS{Enter}
 :*?:ds::discord{Enter}
-:*?:dc::discordcanary{Enter}
+:*?:spot::spotify{enter}
 :*?:edge::msedge{enter}
-:*?:valo::VALORANT-Win64-Shipping.exe{enter}
+:*?:valo::VALORANT-Win64-Shipping{enter}
 :*?:faz::faz{enter}
 :*?:wano::wano{enter}
 :*?:stop::stop{enter}
 #IfWinActive
 
+/*
+dll mouseclick and pos
+DllCall("SetCursorPos", "int", 1515, "int", 841)
+DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+*/
+
 ;Insert:: ;task killer
-taskkill:
-Run, %comspec% /c taskkill /f /im VALORANT-Win64-Shipping.exe,,hide
-Run, %comspec% /c taskkill /f /im TekkenGame-Win64-Shipping.exe,,hide
-Run, %comspec% /c taskkill /f /im csgo.exe,,hide
-Sleep, 500
-Return
 ~alt & 3::Send {alt down}{Numpad3}{alt up} ;valorant heart
 
 slowdown:
@@ -233,16 +260,23 @@ Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" 1
 Loop, 8
 Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 1,,hide
 Loop, 9
+Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" 1,,hide
+Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 1,,hide
+Loop, 9
 {
     Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" -0.1
+    Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" -0.1,,hide
+    Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" -0.1,,hide
     Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" -0.1,,hide
     Sleep, 65
 }
 Return
 Slowup:
-Loop, 8
+Loop, 9
 {
     Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" 0.1
+    Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 0.1,,hide
+    Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" 0.1,,hide
     Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 0.1,,hide
     Sleep, 65
 }
@@ -251,6 +285,19 @@ Return
 work:
 Send, #1
 Run, devop\ds.lnk
+Return
+
+work:
+Send, #4
+Send, #1
+Run, devop\ds.lnk
+Return
+
+play:
+Run, %comspec% /c taskkill /f /im msedge.exe,,hide
+Run, %comspec% /c taskkill /f /im parsecd.exe,,hide
+Run, %comspec% /c taskkill /f /im code.exe,,hide
+Run, %comspec% /c taskkill /f /im discord.exe,,hide
 Return
 
 ^#E::

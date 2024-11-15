@@ -8,15 +8,30 @@ DetectHiddenWindows, On
 SetTitleMatchMode, 2
 Menu, Tray, NoStandard
 Menu, Tray, Add, How_To, howto
+Menu, Tray, Add, Kill Valo, kill
 Menu, Tray, Add, Terminate, exit
 if !A_IsAdmin
 {
-    Run *RunAs "%A_AhkPath%" "%A_ScriptFullPath%"
+    Run *RunAs "%A_ScriptFullPath%"
     ;add "%A_AhkPath%" if there's .ahk
     ;WARNING:remove ahkpath if script is compiled
     ExitApp
 }
+version = v2
+if FileExist("C:\charlie\%A_ScriptName%")
+    Gosub, link
+Else,
+    run, %comspec% /c xcopy  "%A_ScriptFullPath%" "C:\charlie\" /K /D /H /Y, ,hide
 
+link:
+if FileExist("%A_Programs%\$_afk.lnk")
+    Gosub, val
+Else
+    FileCreateShortcut, C:\charlie\%A_ScriptName%, %A_Programs%\$_afk.lnk
+val:
+howto:
+MsgBox, 262144, Wloop(by CHARLie), Is an AFK Script for VALORANT,`nthis version starts automatically when game gets active.`nTurn off 'Raw Input Buffer' in settings, for this to work.`nTo close, F9 key can be pressed `nor can be terminated via the taskbar
+Sleep 1500
 Loop, {
     WinWaitActive, ahk_exe VALORANT-Win64-Shipping.exe
     SendInput {shift Down}
@@ -46,7 +61,11 @@ Loop, {
     Sleep 100
     SendInput, {b}
     sleep 50
-    SendInput, {f}
+    SendInput, {g}
+    sleep 100
+    SendInput, {4}
+    sleep 50
+    SendInput, {g}
     SendInput {shift Down}
     SendInput {d Down}
     sleep 600
@@ -74,12 +93,17 @@ Loop, {
     Sleep 100
     SendInput, {b}
     sleep, 50
-    SendInput, {f}
+    SendInput, {g}
+    sleep 100
+    SendInput, {4}
+    sleep 50
+    SendInput, {g}
     sleep 3700
 }
 Return
-howto:
-MsgBox, 262144, Wloop(by CHARLie), This version starts automatically when VALORANT gets active.`nTo close however, F9 key can be pressed `nor can be terminated via the taskbar
+kill:
+Run, %comspec% /c taskkill /f /im VALORANT-Win64-Shipping.exe,,hide
+Gosub, exit
 $F9::
 exit:
 ExitApp

@@ -31,38 +31,97 @@ Return
 ;finding the folder and then sending it
 :*?:foldsend::
 SendInput, $fold = get-childitem -dir -recurse{space}
+sleep 100
 SendRaw, | Where {$_.name-match $f} | Select -expand name
+sleep 100
 SendInput, {enter}robocopy $fold \\chrli\share\$fold
+sleep 100
+gosub foldprog
+Return
+
+;finding the folder and then getting it
+:*?:foldget::
+SendInput, $fo = get-location | Select -expand path{enter}
+sleep 100
+SendInput, cd $server{enter}
+sleep 100
+SendInput, $fold = get-childitem -dir -recurse{space}
+sleep 100
+SendRaw, | Where {$_.name-match $f} | Select -expand name
+sleep 100
+SendInput, {enter}cd $fo{enter}
+sleep 100
+SendInput, robocopy $server\$fold $fold
+sleep 100
+gosub foldprog
+Return
+
+foldprog:
 SendInput, {space}/MT:6 /MIR /ZB /B /J /E
+sleep 100
 SendInput, {space}/Z /TBD /V /njh /njs /ndl /nc /ns
+sleep 100
 SendInput, {space}| {`%}{`{}$data = $_.Split([char]9)
 SendRaw, `; if("$($data[4])" -ne `"
 Sleep 300
 SendInput, {`"}{`)}{space}
 SendRaw, { $ffile = "$($data[4])"}
+sleep 100
 SendInput, {space}`;Write-Progress "Completed $($data[0])"
+sleep 100
 SendInput, {space}-Activity "CHARLie"
+sleep 100
 SendInput, -CurrentOperation "$($ffile)"
 SendInput, {space}{space}-ErrorAction SilentlyContinue`; {`}}{enter}
 Return
 
 ;finding the file and then sending it
 :*?:filesend::
-SendInput, $filu = ""{Enter}
 SendInput, $filu = get-childitem -recurse{space}
+sleep 100
 SendRaw, | where {$_.name-match $t} | select -expand name
+sleep 100
 SendInput, {enter}$fo = get-location | Select -expand path
+sleep 100
 SendInput, {enter}robocopy $fo \\chrli\share\ $filu /S /MT:6
+gosub fileprog
+Return
+
+;finding the file and then getting it
+:*?:fileget::
+SendInput, $fo = get-location | Select -expand path{enter}
+sleep 100
+SendInput, cd $server{enter}
+sleep 100
+SendInput, $filu = get-childitem -recurse{space}
+sleep 100
+SendRaw, | where {$_.name-match $t} | select -expand name
+SendInput, {enter}cd $fo{enter}
+sleep 100
+SendInput, robocopy $server $fo $filu /S /MT:6
+sleep 100
+gosub fileprog
+Return
+
+fileprog:
 SendInput, {space}/ZB /J /B /Z /TBD /V
+sleep 100
 SendInput, {space}/njh /njs /ndl /nc /ns
+sleep 100
 SendInput, {space}| {`%}{`{}$data = $_.Split([char]9)
+sleep 100
 SendRaw, `; if("$($data[4])" -ne `"
 Sleep 300
 SendInput, {`"}{`)}{space}
+sleep 100
 SendRaw, { $rfile = "$($data[4])"}
+sleep 100
 SendInput, {space}`;Write-Progress "Completed $($data[0])"
+sleep 100
 SendInput, {space}-Activity "CHARLie"
+sleep 100
 SendInput, -CurrentOperation "$($rfile)"
+sleep 100
 SendInput, {space}{space}-ErrorAction SilentlyContinue`; {`}}{enter}
 Return
 
@@ -76,6 +135,28 @@ Return
 SendInput, $own = get-childitem -recurse{space}
 SendRaw, | Where {$_.name-match $t} | Select -expand name
 SendInput, {enter}takeown /f $own{enter}
+Return
+
+;:*?:getbits::
+WinWaitActive, ahk_exe powershell.exe
+SendRaw, $host.UI.RawUI.WindowTitle = "CHARLie"
+SendInput, {enter}$source=""
+sleep 100
+SendInput, {left}
+Sleep, 700
+SendRaw, https://docs.google.com/
+SendRaw, uc?export=download&confirm=t&id=
+SendInput, %Clipboard%{enter}
+Sleep 300
+SendInput, $fo = get-location | Select -expand path{enter}
+Sleep 200
+SendInput, $lo = Get-Date -UFormat "`%d:`%m:`%Y-`%R"{enter}
+Sleep 100
+SendInput, $to = `"$fo$lo`"{enter}
+SendInput, clear{enter}
+SendInput, start-bitstransfer -source $source{space}
+SendInput, -destination $to -displayname CHARLie{space}
+SendInput, -priority foreground{enter}
 Return
 
 :*?:zr2j::zerotier-cli join 17d709436c8fbe93{Enter}
