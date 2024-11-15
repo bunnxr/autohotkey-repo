@@ -124,11 +124,6 @@ RShift & PgDn::SendInput, {Media_Prev}
 ~F8 & WheelUp::SendEvent, {Volume_Up}
 ~F8 & WheelDown::SendEvent, {Volume_Down}
 
-
-#IfWinActive ahk_exe code.exe
-XButton1::SendInput, ^+{.} ;breadcrumbs vscode
-#IfWinActive
-
 #IfWinActive ahk_group discord
 dimscord:
 :*?:yoru::`:yoru`:{enter}
