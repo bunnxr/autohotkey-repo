@@ -86,7 +86,7 @@ if (kill3 = "wait")
     InputBox, kill3, com, , ,190,106
 else
     Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
-
+Return
 pause:: ;suspend specific
 InputBox, procu, SuspendIO,, ,190,106
 Toggle := !Toggle
