@@ -1,0 +1,27 @@
+aot:
+KeyWait, LButton, D
+Sleep 100
+WinSet, AlwaysOnTop, Toggle, A
+Return
+suspendoff:
+Suspend, Off
+SoundBeep, 400
+Menu, Tray, Icon
+Return
+suspend:
+Suspend, On
+SoundBeep
+Menu, Tray, NoIcon
+Return
+Compiler:
+Run, @charlie\ahk2exe\Ahk2Exe.exe
+Return
+MicID:
+Run, @charlie\MicID.exe
+Return
+drivecache:
+Run, D:\drivecache
+Return
+Spy:
+Run, @charlie\WindowSpy.ahk
+Return
