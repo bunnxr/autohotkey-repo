@@ -6,7 +6,7 @@
 *.bat
 *.zip
 *.ini
-*.txt
+.txt
 *.lnk
 *.xml
 *.json

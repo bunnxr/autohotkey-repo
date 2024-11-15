@@ -10,7 +10,10 @@ DetectHiddenWindows, On
 SetTitleMatchMode, 2
 SendMode Input
 SetWorkingDir D:\ 
-;Control, Hide, , Start1, ahk_class Shell_TrayWnd  ;can hide windows start button logo
+;Control, Hide, , Start1, ahk_class Shell_TrayWnd
+;can hide windows start button logo
+Control, Hide, , TrayShowDesktopButtonWClass1, ahk_class Shell_TrayWnd
+;hides the show desktop button taskbar
 
 {
     ;required at script startup
