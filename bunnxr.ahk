@@ -72,7 +72,6 @@ F3::Run C:\Users\%A_UserName%\AppData ;appdata
 F4::Run D:\Drive\My Drive
 F2::Run D:\on
 #space::gosub com
-#space::gosub com
 #IfWinNotActive
 ~F5 & F6:: ;suspend specific
 InputBox, procu, SuspendIO, name of exe, ,240,123
@@ -90,22 +89,6 @@ if (kill3 = "wait")
     InputBox, kill3, com, , ,190,106
 else
     Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
-
-com:
-InputBox, kill3, com, , ,190,106 ;1650,40
-if (kill3 = "aot")
-    gosub aot
-if (kill3 = "work")
-    gosub work
-if (kill3 = "play")
-    gosub play
-if (kill3 = "gpt")
-    run, https://chatgpt.com/?temporary-chat=true
-if (kill3 = "wait")
-    InputBox, kill3, com, , ,190,106
-else
-    Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
-Return
 
 pause:: ;suspend specific
 InputBox, procu, SuspendIO,, ,190,106
@@ -203,30 +186,6 @@ Dllcall("keybd_event", int, 32, int, 57, int, 2, int, 0)
 Return
 #IfWinActive
 
-#IfWinActive ahk_exe spotify.exe
-Up::^Up
-Down::^Down
-Right::^Right
-Left::^Left
-
-#IfWinActive ahk_exe valheim.exe
-[::
-DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
-Return
-]::
-DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
-Return
-g:
-DllCall("mouse_event", "UInt", 0x08)
-Sleep 30
-Dllcall("keybd_event", int, 32, int, 57, int, 0, int, 0)
-Sleep 40
-DllCall("mouse_event", "UInt", 0x10)
-Sleep 40
-Dllcall("keybd_event", int, 32, int, 57, int, 2, int, 0)
-Return
-#IfWinActive
-
 #IfWinActive ahk_class #32770
 :*?:gpt::gpt{enter}
 :*?:play::play{enter}
@@ -240,8 +199,6 @@ Return
 :*?:spot::spotify{enter}
 :*?:edge::msedge{enter}
 :*?:valo::VALORANT-Win64-Shipping{enter}
-:*?:faz::faz{enter}
-:*?:wano::wano{enter}
 :*?:stop::stop{enter}
 #IfWinActive
 
@@ -256,17 +213,9 @@ DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
 ~alt & 3::Send {alt down}{Numpad3}{alt up} ;valorant heart
 
 slowdown:
-Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" 1
-Loop, 8
-Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 1,,hide
-Loop, 9
-Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" 1,,hide
 Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 1,,hide
 Loop, 9
 {
-    Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" -0.1
-    Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" -0.1,,hide
-    Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" -0.1,,hide
     Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" -0.1,,hide
     Sleep, 65
 }
@@ -274,9 +223,6 @@ Return
 Slowup:
 Loop, 9
 {
-    Run, *RunAs @charlie\nircmd.exe changeappvolume "msedge.exe" 0.1
-    Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 0.1,,hide
-    Run, *RunAs @charlie\nirc.exe changeappvolume "Spotify.exe" 0.1,,hide
     Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 0.1,,hide
     Sleep, 65
 }
@@ -285,19 +231,6 @@ Return
 work:
 Send, #1
 Run, devop\ds.lnk
-Return
-
-work:
-Send, #4
-Send, #1
-Run, devop\ds.lnk
-Return
-
-play:
-Run, %comspec% /c taskkill /f /im msedge.exe,,hide
-Run, %comspec% /c taskkill /f /im parsecd.exe,,hide
-Run, %comspec% /c taskkill /f /im code.exe,,hide
-Run, %comspec% /c taskkill /f /im discord.exe,,hide
 Return
 
 ^#E::
