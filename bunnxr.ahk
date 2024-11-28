@@ -40,7 +40,7 @@ if !A_IsAdmin
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
-    micid = 6
+    micid = 8
     appvol := spotify
     procu = Discord
     gosub seticon

@@ -13,7 +13,7 @@ SoundGet, micvar, , mute, %micid%
 if (micvar = "Off")
     Menu, Tray, Icon, devop\icons\orange.ico ;Menu, Tray, Icon, *
 Else
-    Menu, Tray, Icon, devop\icons\skully.ico
+    Menu, Tray, Icon, devop\icons\tomato.ico
 Return
 /*
 #if (micvar = "Off")
