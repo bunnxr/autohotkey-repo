@@ -1,5 +1,5 @@
-﻿;tanuj accha aadmi hai
-;bunnxr
+﻿;bunnxr
+;i love my sanji
 ;AutoHotkey v1.1.32.00 - November 24, 2019
 ;# = Win, ! = Alt, ^ = Ctrl, + = Shift , & can be used combine two keys
 ;#NoTrayIcon
@@ -40,7 +40,7 @@ if !A_IsAdmin
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
-    micid = 8
+    micid = 6
     appvol := spotify
     procu = Discord
     gosub seticon
@@ -116,7 +116,7 @@ F13::gosub aot
 ~LAlt & `::SendInput {``} ;sending the grace accent as it was muted
  
 MEDIAKEYS:
-#space::
+~RAlt::
 SendInput, {Media_Play_Pause}
 Return
 RShift & PgUp::SendInput, {Media_Next}
@@ -179,6 +179,7 @@ Return
 #IfWinActive
 
 #IfWinActive ahk_class #32770
+:*?:riot::RiotClientServices.exe{enter}
 :*?:gpt::gpt{enter}
 :*?:play::play{enter}
 :*?:work::work{enter}

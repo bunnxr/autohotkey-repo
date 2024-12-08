@@ -12,7 +12,7 @@ Menu, Tray, Add, Kill Valo, kill
 Menu, Tray, Add, Terminate, exit
 if !A_IsAdmin
 {
-    Run *RunAs "%A_ScriptFullPath%"
+    Run *RunAs %A_AhkPath% "%A_ScriptFullPath%"
     ;add "%A_AhkPath%" if there's .ahk
     ;WARNING:remove ahkpath if script is compiled
     ExitApp
