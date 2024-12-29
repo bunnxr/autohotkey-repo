@@ -1,5 +1,4 @@
 ﻿;bunnxr
-;i love my sanji
 ;AutoHotkey v1.1.32.00 - November 24, 2019
 ;# = Win, ! = Alt, ^ = Ctrl, + = Shift , & can be used combine two keys
 ;#NoTrayIcon
@@ -40,7 +39,7 @@ if !A_IsAdmin
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
-    micid = 6
+    micid = 5
     appvol := spotify
     procu = Discord
     gosub seticon
@@ -59,27 +58,22 @@ Suspend, Permit
 DllCall("LockWorkStation")
 Return
 
-~AppsKey::Send, ^!g ;drive search
-
 LWin & WheelDown::SendInput {Ctrl down}{Lwin Down}{Right}{Lwin Up}{Ctrl Up} ;workspace down
 Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;workspace up
 
 #IfWinNotActive, ahk_group CHARLie
-`::WinMinimize,A ;minimizes active window.
-F1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
+;`::WinMinimize,A ;minimizes active window.
+F7 & 1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
 ;\\?\Volume{0215518d-0000-0000-0000-100000000000}\
-F3::Run C:\Users\%A_UserName%\AppData ;appdata
-F4::Run D:\Drive\My Drive
-F2::Run D:\on
+F7 & 2::Run C:\Users\%A_UserName%\AppData ;appdata
+F7 & 3::Run D:\on
+F7::XButton1 ;back
+F8::XButton2 ;forward
 #space::gosub com
 #IfWinNotActive
 
 com:
 InputBox, kill3, com, , ,190,106 ;1650,40
-if (kill3 = "aot")
-    gosub aot
-if (kill3 = "work")
-    gosub work
 if (kill3 = "gpt")
     run, https://chatgpt.com/?temporary-chat=true
 if (kill3 = "wait")
@@ -95,14 +89,14 @@ If Toggle
 else
     Run *RunAs @charlie\suspend.exe -r %procu%,, Hide
 return
-F7::
+F7 & 7::
 Toggle := !Toggle
 If Toggle
     Gosub, Slowdown
 else
     Gosub, Slowup
 return
-F12:: ;mute current windowF
+F7 & =:: ;mute current windowF
 WinGet, WinProcessName, ProcessName, A
 If (WinProcessName = "VALORANT-Win64-Shipping.exe")
 {
@@ -133,6 +127,7 @@ dimscord:
 :*?:bld::****{left}{left}
 :*?:strk::~~~~{left}{left}
 :*?:`(::`(`){left}
+:*?:`<::`<`>{left}
 AppsKey::Send ^g
 ~Capslock::Send, ^k
 Tab::Send, {Ctrl Down}{i}{Ctrl Up}
@@ -160,24 +155,6 @@ Return
 SendInput, ^{F3} ;sends kick all to parsec
 Return
 
-#IfWinActive ahk_exe valheim.exe
-[::
-DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
-Return
-]::
-DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
-Return
-g:
-DllCall("mouse_event", "UInt", 0x08)
-Sleep 30
-Dllcall("keybd_event", int, 32, int, 57, int, 0, int, 0)
-Sleep 40
-DllCall("mouse_event", "UInt", 0x10)
-Sleep 40
-Dllcall("keybd_event", int, 32, int, 57, int, 2, int, 0)
-Return
-#IfWinActive
-
 #IfWinActive ahk_class #32770
 :*?:riot::RiotClientServices.exe{enter}
 :*?:gpt::gpt{enter}
@@ -195,16 +172,6 @@ Return
 :*?:stop::stop{enter}
 #IfWinActive
 
-/*
-dll mouseclick and pos
-DllCall("SetCursorPos", "int", 1515, "int", 841)
-DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
-DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
-*/
-
-;Insert:: ;task killer
-~alt & 3::Send {alt down}{Numpad3}{alt up} ;valorant heart
-
 slowdown:
 Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 1,,hide
 Loop, 9
@@ -219,11 +186,6 @@ Loop, 9
     Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 0.1,,hide
     Sleep, 65
 }
-Return
-
-work:
-Send, #1
-Run, devop\ds.lnk
 Return
 
 ^#E::
@@ -241,6 +203,7 @@ if A_IsSuspended
 else
     Gosub, suspend
 Return
+
 ^#r::
 Suspend, Permit
 Reload
