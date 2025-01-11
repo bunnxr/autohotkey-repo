@@ -53,9 +53,14 @@ caps:
 ~$Capslock Up::SetCapsLockState, Off ;disabling caps and instead using it as a key
 +$CapsLock Up::SetCapsLockState % !GetKeyState("CapsLock", "T")
 
-;$Pause:: ;lockwindows
++BackSpace:: ;lockwindows
 Suspend, Permit
 DllCall("LockWorkStation")
+Return
+
+CapsLock:: 
+AppsKey::
+SendInput, #+{F} ;opens search
 Return
 
 LWin & WheelDown::SendInput {Ctrl down}{Lwin Down}{Right}{Lwin Up}{Ctrl Up} ;workspace down
@@ -63,10 +68,10 @@ Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;worksp
 
 #IfWinNotActive, ahk_group CHARLie
 ;`::WinMinimize,A ;minimizes active window.
-F7 & 1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
+;F7 & 1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
 ;\\?\Volume{0215518d-0000-0000-0000-100000000000}\
-F7 & 2::Run C:\Users\%A_UserName%\AppData ;appdata
-F7 & 3::Run D:\on
+;F7 & 2::Run C:\Users\%A_UserName%\AppData ;appdata
+;F7 & 3::Run D:\on
 F7::XButton1 ;back
 F8::XButton2 ;forward
 #space::gosub com
@@ -79,16 +84,9 @@ if (kill3 = "gpt")
 if (kill3 = "wait")
     InputBox, kill3, com, , ,190,106
 else
+    ;run, https://www.google.com/search?q=%kill3%
     Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
 Return
-pause:: ;suspend specific
-InputBox, procu, SuspendIO,, ,190,106
-Toggle := !Toggle
-If Toggle
-    Run *RunAs @charlie\suspend.exe %procu%,, Hide
-else
-    Run *RunAs @charlie\suspend.exe -r %procu%,, Hide
-return
 F7 & 7::
 Toggle := !Toggle
 If Toggle
@@ -135,6 +133,7 @@ Tab::Send, {Ctrl Down}{i}{Ctrl Up}
 
 #IfWinActive ahk_exe parsecd.exe
 parsec:
+/*
 ~CapsLock & d::
 Send, ^!{d}
 KeyWait, CapsLock
@@ -154,8 +153,10 @@ Return
 ~CapsLock & x::
 SendInput, ^{F3} ;sends kick all to parsec
 Return
+*/
 
 #IfWinActive ahk_class #32770
+/*
 :*?:riot::RiotClientServices.exe{enter}
 :*?:gpt::gpt{enter}
 :*?:play::play{enter}
@@ -170,6 +171,7 @@ Return
 :*?:edge::msedge{enter}
 :*?:valo::VALORANT-Win64-Shipping{enter}
 :*?:stop::stop{enter}
+*/
 #IfWinActive
 
 slowdown:
@@ -212,4 +214,4 @@ Return
 Suspend, Permit
 ExitApp, [ ExitCode]
 Return
-^l::Run, devop\autohotkey-repo\wloop.ahk
+^l::Run, devop\autohotkey-repo\wloop_1080p.ahk

@@ -1,4 +1,4 @@
-Home::  ; hotkey
+~BackSpace & =::  ; hotkey
 SoundSet, +1, MASTER, mute, %micid%
 SoundGet, micvar, , mute, %micid%
 if (micvar = "Off")
