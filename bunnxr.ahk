@@ -58,11 +58,6 @@ Suspend, Permit
 DllCall("LockWorkStation")
 Return
 
-CapsLock:: 
-AppsKey::
-SendInput, #+{F} ;opens search
-Return
-
 LWin & WheelDown::SendInput {Ctrl down}{Lwin Down}{Right}{Lwin Up}{Ctrl Up} ;workspace down
 Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;workspace up
 
