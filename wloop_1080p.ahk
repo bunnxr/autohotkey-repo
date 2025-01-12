@@ -20,10 +20,10 @@ Gosub, link
 Else,
 run, %comspec% /c xcopy "%A_ScriptFullPath%" "C:\charlie\" /K /D /H /Y, ,hide
 link:
-if FileExist("%A_Programs%\$_afk.lnk")
-Gosub, val
-Else
-FileCreateShortcut, C:\charlie\%A_ScriptName%, %A_Programs%\$_afk.lnk
+;if FileExist("%A_Programs%\$_afk.lnk")
+;Gosub, val
+;Else
+;FileCreateShortcut, C:\charlie\%A_ScriptName%, %A_Programs%\$_afk.lnk
 val:
 howto:
 MsgBox, 262144, Wloop(by CHARLie), Is an AFK Script for VALORANT,`nthis version starts automatically when game gets active.`nTurn off 'Raw Input Buffer' in settings, for this to work.`nTo close, F9 key can be pressed `nor can be terminated via the taskbar
