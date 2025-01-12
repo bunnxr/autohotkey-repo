@@ -1,5 +1,0 @@
-@echo off
-MODE 55,14
-title commands by CHARLie
-powershell.exe -command start-bitstransfer -source """https://docs.google.com/uc?export=download&confirm=t&id=18STH5k-iTSG78gyEUCbM2iDskxG9Wt8A""" -destination %~dp0\nfs.zip -description """Downloading NFS_Most Wanted....""" -displayname CHARLie -priority foreground
-pause
