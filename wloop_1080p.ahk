@@ -11,8 +11,8 @@ Menu, Tray, Add, Kill Valo, kill
 Menu, Tray, Add, Terminate, exit
 if !A_IsAdmin
 {
-Run *RunAs "%A_ScriptFullPath%"
-ExitApp
+    Run *RunAs "%A_AhkPath%" "%A_ScriptFullPath%"
+    ExitApp
 }
 version = v2
 if FileExist("C:\charlie\%A_ScriptName%")
