@@ -53,7 +53,7 @@ caps:
 ~$Capslock Up::SetCapsLockState, Off ;disabling caps and instead using it as a key
 +$CapsLock Up::SetCapsLockState % !GetKeyState("CapsLock", "T")
 
-+BackSpace:: ;lockwindows
+;+BackSpace:: ;lockwindows
 Suspend, Permit
 DllCall("LockWorkStation")
 Return

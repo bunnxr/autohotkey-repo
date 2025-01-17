@@ -31,7 +31,21 @@ Else
 val:
 howto:
 MsgBox, 262144, Wloop(by CHARLie), Is an AFK Script for VALORANT,`nthis version starts automatically when game gets active.`nTurn off 'Raw Input Buffer' in settings, for this to work.`nTo close, F9 key can be pressed `nor can be terminated via the taskbar
-Sleep 1500
+
+Gui, Add, DropDownList, x22 y42 w210  vList1 ,Red John|Daryl|Mr.Brown|Shawn Spencer|Sheldon|Andre Layton|
+Gui, show
+Return
+
+OnSelect:
+Gui, Submit, nohide
+if (List1 = "A")
+	MsgBox, Action A
+else if (List1 = "B")
+	MsgBox, Action B
+else if (List1 = "C")
+	MsgBox, Action C
+; etc.
+return
 Loop, {
     WinWaitActive, ahk_exe VALORANT-Win64-Shipping.exe
     SendInput {shift Down}
