@@ -7,6 +7,7 @@ DetectHiddenWindows, On
 SetTitleMatchMode, 2
 Menu, Tray, NoStandard
 Menu, Tray, Add, How_To, howto
+Menu, Tray, Add, Select Res, reso
 Menu, Tray, Add, Kill Valo, kill
 Menu, Tray, Add, Terminate, exit
 if !A_IsAdmin
@@ -25,11 +26,16 @@ if FileExist("%A_Programs%\$_afk.lnk")
 Else
     FileCreateShortcut, C:\charlie\autohotkey.exe, %A_Programs%\$_afk.lnk, C:\charlie, C:\charlie\wloop.ahk,,,l
 val:
+FileRead, res, C:\charlie\wloopres.txt
 howto:
 MsgBox, 262144, Wloop(by CHARLie), Is an AFK Script for VALORANT,`nfor 1080p - Press F8.`nfor 768p - Press F7.`nTurn off 'Raw Input Buffer' in settings, for this to work.`nTo close, "ESC" key can be pressed `nor can be terminated via the taskbar.
-Sleep 1500
 
-F8::
+If (res = 1080p)
+    Gosub, 1080p
+Else If (res = 768p)
+    Gosub, 768p
+Return
+
 1080p:
 Loop, {
     WinWaitActive, ahk_exe VALORANT-Win64-Shipping.exe
@@ -101,7 +107,6 @@ Loop, {
 }
 Return
 
-F7::
 768p:
 Loop, {
     WinWaitActive, ahk_exe VALORANT-Win64-Shipping.exe
@@ -170,6 +175,15 @@ Loop, {
     sleep 50
     SendInput, {g}
     sleep 3700
+}
+Return
+
+reso:
+If FileExist("C:\charlie\wloopres.txt")
+    Run, C:\charlie\wloopres.txt
+Else {
+    FileAppend,, C:\charlie\wloopres.txt
+    Run, C:\charlie\wloopres.txt
 }
 Return
 

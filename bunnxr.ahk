@@ -12,7 +12,7 @@ SendMode Input
 SetWorkingDir D:\ 
 ;Control, Hide, , Start1, ahk_class Shell_TrayWnd
 ;can hide windows start button logo
-Control, Hide, , TrayShowDesktopButtonWClass1, ahk_class Shell_TrayWnd
+;Control, Hide, , TrayShowDesktopButtonWClass1, ahk_class Shell_TrayWnd
 ;hides the show desktop button taskbar
 
 ;Control, Hide, , Start1, ahk_class Shell_TrayWnd  ;can hide windows start button logo
@@ -39,19 +39,23 @@ if !A_IsAdmin
     GroupAdd, cmd, ahk_exe parsecd.exe
     GroupAdd, discord, ahk_exe discord.exe
     GroupAdd, discord, ahk_exe discordcanary.exe
-    micid = 5
+    micid = 10
     appvol := spotify
     procu = Discord
     gosub seticon
 }
 Return
-#Include, %A_scriptdir%\ahkmenu.txt
+
+#Include, %A_scriptdir%\shortu.ahk
 #Include, %A_scriptdir%\mymicmute.ahk
 ;#Include, %A_ScriptDir%\takefile.ahk
 
 caps:
 ~$Capslock Up::SetCapsLockState, Off ;disabling caps and instead using it as a key
 +$CapsLock Up::SetCapsLockState % !GetKeyState("CapsLock", "T")
+
+!4::Send, !{F4} ;alt+f4
+F8 & -::Send, {F11} ;fullscreen
 
 ;+BackSpace:: ;lockwindows
 Suspend, Permit
@@ -66,9 +70,8 @@ Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;worksp
 ;F7 & 1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
 ;\\?\Volume{0215518d-0000-0000-0000-100000000000}\
 ;F7 & 2::Run C:\Users\%A_UserName%\AppData ;appdata
-;F7 & 3::Run D:\on
-F7::XButton1 ;back
-F8::XButton2 ;forward
+Rctrl & LShift::Run D:\on
+
 #space::gosub com
 #IfWinNotActive
 
@@ -78,6 +81,8 @@ if (kill3 = "gpt")
     run, https://chatgpt.com/?temporary-chat=true
 if (kill3 = "wait")
     InputBox, kill3, com, , ,190,106
+if (kill3 = "short")
+    gosub shortu
 else
     ;run, https://www.google.com/search?q=%kill3%
     Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
@@ -89,16 +94,17 @@ If Toggle
 else
     Gosub, Slowup
 return
-F7 & =:: ;mute current windowF
-WinGet, WinProcessName, ProcessName, A
-If (WinProcessName = "VALORANT-Win64-Shipping.exe")
+=:: ;mute current windowF
+;WinGet, WinProcessName, ProcessName, A
+;If (WinProcessName = "VALORANT-Win64-Shipping.exe")
 {
-    WinGet, valID, PID, ahk_exe VALORANT-Win64-Shipping.exe
-    WinProcessName = /%valID%
+    ;WinGet, valID, PID, ahk_exe VALORANT-Win64-Shipping.exe
+    ;WinProcessName = /%valID%
 }
-Run, *RunAs @charlie\nirc.exe muteappvolume %WinProcessName% 2,,hide
+;%WinProcessName%
+Run, *RunAs @charlie\nirc.exe muteappvolume parsecd.exe 2,,hide
 Return
-F13::gosub aot
+F9::
 
 ~LAlt & `::SendInput {``} ;sending the grace accent as it was muted
  
@@ -110,6 +116,7 @@ RShift & PgUp::SendInput, {Media_Next}
 RShift & PgDn::SendInput, {Media_Prev}
 ~F8 & WheelUp::SendEvent, {Volume_Up}
 ~F8 & WheelDown::SendEvent, {Volume_Down}
+
 
 #IfWinActive ahk_group discord
 dimscord:
@@ -126,29 +133,26 @@ AppsKey::Send ^g
 Tab::Send, {Ctrl Down}{i}{Ctrl Up}
 #IfWinActive
 
-#IfWinActive ahk_exe parsecd.exe
-parsec:
-/*
-~CapsLock & d::
-Send, ^!{d}
-KeyWait, CapsLock
-Keywait, d, D
-Winclose
-Return
-~CapsLock & q::
-Send, ^+{i}
-Return
-~CapsLock & w::
-Send, ^+{w}
-Return
-#IfWinActive
-~CapsLock & Enter::
-SendInput, ^{F1} ;sends accept all to parsec
-Return
-~CapsLock & x::
-SendInput, ^{F3} ;sends kick all to parsec
-Return
-*/
+AppsKey & y::
+Loop,
+{
+    ;yuro instalock
+    WinWaitActive, ahk_exe VALORANT-Win64-Shipping.exe
+    ;wait for valorant to be active
+    Sleep 20
+    DllCall("SetCursorPos", "int", 383, "int", 733)
+    ;set cursor position to 383 and 733 co-ordinates
+    Sleep 100 ;necessary for the cursor to move
+    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+    ;mouse button down
+    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+    ;mouse button up
+    Sleep 50
+    DllCall("SetCursorPos", "int", 953, "int", 747)
+    Sleep 100
+    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+}
 
 #IfWinActive ahk_class #32770
 /*
