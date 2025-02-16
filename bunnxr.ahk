@@ -193,27 +193,25 @@ else
 Return
 
 ~\::
-Toggle := !Toggle
-if Toggle
-    Loop,
-    {
-        ;yuro instalock
-        Sleep 20
-        DllCall("SetCursorPos", "int", 383, "int", 733)
-        ;set cursor position to 383 and 733 co-ordinates
-        Sleep 100 ;necessary for the cursor to move
-        DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
-        ;mouse button down
-        DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
-        ;mouse button up
-        Sleep 50
-        DllCall("SetCursorPos", "int", 953, "int", 747)
-        Sleep 100
-        DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
-        DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
-    }
-else
-    Reload
+Loop,
+{
+    ;yuro instalock
+    if (BreakLoop = 1)
+        break   
+    Sleep 20
+    DllCall("SetCursorPos", "int", 383, "int", 733)
+    ;set cursor position to 383 and 733 co-ordinates
+    Sleep 100 ;necessary for the cursor to move
+    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+    ;mouse button down
+    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+    ;mouse button up
+    Sleep 50
+    DllCall("SetCursorPos", "int", 953, "int", 747)
+    Sleep 100
+    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+}
 Return
 #IfWinActive
 
