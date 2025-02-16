@@ -42,8 +42,6 @@ Return
 ;------------------
 
 
-
-#Include, %A_scriptdir%\shortu.ahk
 ;#Include, %A_ScriptDir%\takefile.ahk
 ~$Capslock Up::SetCapsLockState, Off ;disabling caps and instead using it as a key
 +$CapsLock Up::SetCapsLockState % !GetKeyState("CapsLock", "T")
@@ -66,8 +64,6 @@ if (comvar = "gpt")
         run, https://chat.openai.com/?model=gpt-4&q=%gptsr%
         Return
     }
-if (comvar = "short")
-    gosub shortu
 if ErrorLevel = 1
     return
 else
