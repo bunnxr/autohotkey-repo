@@ -26,38 +26,31 @@ if !A_IsAdmin
 {
     ;required at script startup
     Menu, Tray, NoStandard
-    Menu, Tray, Add, Spy, Spy
-    Menu, Tray, Add, MicID, MicID
-    Menu, Tray, Add, Ahk2exe, Compiler
-    Menu, Tray, Add, DrvCache, drivecache
     Menu, Tray, Add, Reload, ^#r
-    Menu, Tray, Add, Terminate, #Delete
-    GroupAdd, CHARLie, ahk_exe VALORANT-Win64-Shipping.exe
-    GroupAdd, CHARLie, ahk_exe csgo.exe
-    GroupAdd, cmd, ahk_exe cmd.exe
-    GroupAdd, cmd, ahk_exe powershell.exe
-    GroupAdd, cmd, ahk_exe parsecd.exe
-    GroupAdd, discord, ahk_exe discord.exe
-    GroupAdd, discord, ahk_exe discordcanary.exe
+    Menu, Tray, Add, Terminate, ^#Delete
     micid = 10
-    appvol := spotify
-    procu = Discord
+    appvol = spotify
     gosub seticon
 }
 Return
 
-#Include, %A_scriptdir%\shortu.ahk
-#Include, %A_scriptdir%\mymicmute.ahk
-;#Include, %A_ScriptDir%\takefile.ahk
 
-caps:
+
+
+;test area
+
+;------------------
+
+
+
+#Include, %A_scriptdir%\shortu.ahk
+;#Include, %A_ScriptDir%\takefile.ahk
 ~$Capslock Up::SetCapsLockState, Off ;disabling caps and instead using it as a key
 +$CapsLock Up::SetCapsLockState % !GetKeyState("CapsLock", "T")
+~LAlt & `::SendInput {``} ;sending the grace accent as it was muted
+~$Capslock::SendInput #{g}
 
-!4::Send, !{F4} ;alt+f4
-F8 & -::Send, {F11} ;fullscreen
-
-;+BackSpace:: ;lockwindows
+pause:: ;lockwindows
 Suspend, Permit
 DllCall("LockWorkStation")
 Return
@@ -65,67 +58,111 @@ Return
 LWin & WheelDown::SendInput {Ctrl down}{Lwin Down}{Right}{Lwin Up}{Ctrl Up} ;workspace down
 Lwin & WheelUp::SendInput {Ctrl down}{Lwin Down}{Left}{Lwin Up}{Ctrl Up} ;workspace up
 
-#IfWinNotActive, ahk_group CHARLie
-;`::WinMinimize,A ;minimizes active window.
-;F7 & 1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
-;\\?\Volume{0215518d-0000-0000-0000-100000000000}\
-;F7 & 2::Run C:\Users\%A_UserName%\AppData ;appdata
-Rctrl & LShift::Run D:\on
-
-#space::gosub com
-#IfWinNotActive
-
 com:
-InputBox, kill3, com, , ,190,106 ;1650,40
-if (kill3 = "gpt")
-    run, https://chatgpt.com/?temporary-chat=true
-if (kill3 = "wait")
-    InputBox, kill3, com, , ,190,106
-if (kill3 = "short")
+InputBox, comvar, com, , ,190,106 ;1650,40
+if (comvar = "gpt")
+    {
+        InputBox, gptsr, GPT, , ,190,106 ;1650,40
+        run, https://chat.openai.com/?model=gpt-4&q=%gptsr%
+        Return
+    }
+if (comvar = "short")
     gosub shortu
+if ErrorLevel = 1
+    return
 else
-    ;run, https://www.google.com/search?q=%kill3%
-    Run, %comspec% /c taskkill /f /im %kill3%.exe,,hide
+    run, https://www.google.com/search?q=%comvar%
 Return
-F7 & 7::
-Toggle := !Toggle
-If Toggle
-    Gosub, Slowdown
-else
-    Gosub, Slowup
-return
-=:: ;mute current windowF
-;WinGet, WinProcessName, ProcessName, A
-;If (WinProcessName = "VALORANT-Win64-Shipping.exe")
-{
-    ;WinGet, valID, PID, ahk_exe VALORANT-Win64-Shipping.exe
-    ;WinProcessName = /%valID%
-}
-;%WinProcessName%
-Run, *RunAs @charlie\nirc.exe muteappvolume parsecd.exe 2,,hide
-Return
-F9::
 
-~LAlt & `::SendInput {``} ;sending the grace accent as it was muted
- 
-MEDIAKEYS:
+media_control:
 ~RAlt::
 SendInput, {Media_Play_Pause}
 Return
+#IfWinExist, Spotify
+;change songs easily
+;replacement of pgdn/up keys
+PgUp::SendInput, {Media_Next}
+PgDn::SendInput, {Media_Prev}
+~+PgDn::SendInput, {PgDn}
+~+PgUp::SendInput, {PgUp}
+#IfWinExist
 RShift & PgUp::SendInput, {Media_Next}
 RShift & PgDn::SendInput, {Media_Prev}
 ~F8 & WheelUp::SendEvent, {Volume_Up}
 ~F8 & WheelDown::SendEvent, {Volume_Down}
 
+Home::  ; micmute
+Suspend, Permit
+SoundSet, +1, MASTER, mute, %micid%
+SoundGet, micvar, , mute, %micid%
+if (micvar = "Off")
+	loop 2
+	{
+		SoundBeep, 700, 100
+	}
+Else
+    SoundBeep, 700, 100
+seticon:
+SoundGet, micvar, , mute, %micid%
+if (micvar = "Off")
+    Menu, Tray, Icon, devop\icons\orange.ico ;Menu, Tray, Icon, *
+Else
+    Menu, Tray, Icon, devop\icons\tomato.ico
+Return
 
-#IfWinActive ahk_group discord
-dimscord:
+F7::  ; slightly lower volume and increase of fixed app
+Toggle := !Toggle
+If Toggle
+{
+    Run, *RunAs @charlie\nirc.exe changeappvolume "%appvol%.exe" 1,,hide
+    Loop, 9
+    {
+        Run, *RunAs @charlie\nirc.exe changeappvolume "%appvol%.exe" -0.1,,hide
+        Sleep, 65
+    }
+    Return
+}
+else
+{
+    Loop, 9
+        {
+            Run, *RunAs @charlie\nirc.exe changeappvolume "%appvol%.exe" 0.1,,hide
+            Sleep, 65
+        }
+    Return
+}
+return
+
+F12:: ; mute current window
+WinGet, WinProcessName, ProcessName, A
+If (WinProcessName = "VALORANT-Win64-Shipping.exe")
+    {
+        WinGet, valID, PID, ahk_exe VALORANT-Win64-Shipping.exe
+        WinProcessName = /%valID%
+    }
+Run, @charlie\nirc.exe muteappvolume %WinProcessName% 2,,hide
+Return
+
+RShift & LButton:: ; toggles always on top function on user apps
+KeyWait, LButton, D
+Sleep 100
+WinSet, AlwaysOnTop, Toggle, A
+Return
+
+program_specifics:
+
+#IfWinActive ahk_class #32770 ;com box shortcuts
+:*?:gpt::gpt{enter}
+#IfWinActive
+
+#IfWinActive ahk_exe code.exe
+XButton1::Send, ^+.
+#IfWinActive
+
+#IfWinActive ahk_exe discord.exe
 :*?:yoru::`:yoru`:{enter}
 :*?:vc::<{`#}961579220595781644>
 :*?:v2c::<{`#}993475685660241972>
-:*?:itlic::**{left}
-:*?:bld::****{left}{left}
-:*?:strk::~~~~{left}{left}
 :*?:`(::`(`){left}
 :*?:`<::`<`>{left}
 AppsKey::Send ^g
@@ -133,63 +170,58 @@ AppsKey::Send ^g
 Tab::Send, {Ctrl Down}{i}{Ctrl Up}
 #IfWinActive
 
-AppsKey & y::
-Loop,
-{
-    ;yuro instalock
-    WinWaitActive, ahk_exe VALORANT-Win64-Shipping.exe
-    ;wait for valorant to be active
-    Sleep 20
-    DllCall("SetCursorPos", "int", 383, "int", 733)
-    ;set cursor position to 383 and 733 co-ordinates
-    Sleep 100 ;necessary for the cursor to move
-    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
-    ;mouse button down
-    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
-    ;mouse button up
-    Sleep 50
-    DllCall("SetCursorPos", "int", 953, "int", 747)
-    Sleep 100
-    DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
-    DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
-}
+valorant:
 
-#IfWinActive ahk_class #32770
-/*
-:*?:riot::RiotClientServices.exe{enter}
-:*?:gpt::gpt{enter}
-:*?:play::play{enter}
-:*?:work::work{enter}
-:*?:aot::aot{enter}
-:*?:wait::wait{enter}
-:*?:pars::parsecd{enter}
-:*?:code::code{enter}
-:*?:drv::GoogleDriveFS{Enter}
-:*?:ds::discord{Enter}
-:*?:spot::spotify{enter}
-:*?:edge::msedge{enter}
-:*?:valo::VALORANT-Win64-Shipping{enter}
-:*?:stop::stop{enter}
-*/
+#IfWinNotActive, ahk_exe VALORANT-Win64-Shipping.exe
+F13::SendInput, {F11} ;fullscreen toggle
+#space::gosub com
+`::WinMinimize,A ;minimizes active window.
+;F7 & 1::Run, explorer.exe /root`,`,::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
+;\\?\Volume{0215518d-0000-0000-0000-100000000000}\
+;F7 & 2::Run C:\Users\%A_UserName%\AppData ;appdata
+#IfWinNotActive
+
+#IfWinActive ahk_exe VALORANT-Win64-Shipping.exe
+Pause::
+Toggle := !Toggle
+if Toggle
+    {
+        Run, devop\autohotkey-repo\wloop.ahk,,,wloopid
+        SoundBeep, 400
+    }
+else
+    {
+        SoundBeep, 400
+        Process, Close, %wloopid%
+    }
+Return
+
+~\::
+Toggle := !Toggle
+if Toggle
+    Loop,
+    {
+        ;yuro instalock
+        Sleep 20
+        DllCall("SetCursorPos", "int", 383, "int", 733)
+        ;set cursor position to 383 and 733 co-ordinates
+        Sleep 100 ;necessary for the cursor to move
+        DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+        ;mouse button down
+        DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+        ;mouse button up
+        Sleep 50
+        DllCall("SetCursorPos", "int", 953, "int", 747)
+        Sleep 100
+        DllCall("mouse_event", uint, 2, int, x, int, y, uint, 0, int, 0)
+        DllCall("mouse_event", uint, 4, int, x, int, y, uint, 0, int, 0)
+    }
+else
+    Reload
+Return
 #IfWinActive
 
-slowdown:
-Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 1,,hide
-Loop, 9
-{
-    Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" -0.1,,hide
-    Sleep, 65
-}
-Return
-Slowup:
-Loop, 9
-{
-    Run, *RunAs @charlie\nirc.exe changeappvolume "msedge.exe" 0.1,,hide
-    Sleep, 65
-}
-Return
-
-^#E::
+^#E:: ; restarts windows explorer and removes the eject tray icon
 Run, %comspec% /c taskkill /f /im explorer.exe,,hide
 Sleep, 400
 Run, explorer.exe
@@ -197,20 +229,21 @@ Sleep, 6000
 Run, devop\noeject.bat,,hide
 Return
 
-^#/::
+^#/:: ;toggle suspend on/off
 Suspend, Permit
 if A_IsSuspended
-    Gosub, suspendoff
+    {
+        SoundBeep, 400
+        Menu, Tray, Icon
+        Suspend, Off
+    }
 else
-    Gosub, suspend
+    {
+        SoundBeep, 400
+        Menu, Tray, NoIcon
+        Suspend, On
+    }
 Return
 
-^#r::
-Suspend, Permit
-Reload
-Return
-#Delete::
-Suspend, Permit
-ExitApp, [ ExitCode]
-Return
-^l::Run, devop\autohotkey-repo\wloop_1080p.ahk
+^#r::Reload ;reload script
+^#Delete::ExitApp ;terminate script
